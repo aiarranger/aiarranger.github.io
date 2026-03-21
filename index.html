@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Arranger合同会社</title>
+  <meta name="description" content="AI Arranger合同会社 - AI技術を活用した業務改善・システム開発・コンサルティング">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; color: #1a1a2e; line-height: 1.8; }
+
+    .hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #fff;
+      padding: 80px 20px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+    .hero .subtitle { font-size: 1.1rem; color: #b0c4de; margin-bottom: 2rem; }
+    .hero .tagline { font-size: 1.3rem; font-weight: 300; max-width: 600px; margin: 0 auto; }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+    section { padding: 60px 20px; }
+    section:nth-child(even) { background: #f8f9fa; }
+    h2 { font-size: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #0f3460; }
+
+    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 1.5rem; }
+    .service-card {
+      background: #fff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 24px;
+    }
+    .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #0f3460; }
+    .service-card p { font-size: 0.9rem; color: #555; }
+
+    .company-info table { width: 100%; border-collapse: collapse; }
+    .company-info th, .company-info td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e0e0e0; }
+    .company-info th { width: 30%; background: #f5f5f5; font-weight: 600; white-space: nowrap; }
+
+    .profile { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+    .profile-text { flex: 1; min-width: 250px; }
+    .profile-text h3 { margin-bottom: 0.5rem; }
+    .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .skill-tag {
+      background: #e8eaf6;
+      color: #1a237e;
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+    }
+
+    .contact-section { background: #1a1a2e; color: #fff; text-align: center; }
+    .contact-section h2 { color: #fff; border-bottom-color: #4a6fa5; }
+    .contact-email { font-size: 1.2rem; margin-top: 1rem; }
+    .contact-email a { color: #7ec8e3; text-decoration: none; }
+
+    footer { background: #111; color: #888; text-align: center; padding: 20px; font-size: 0.85rem; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 1.6rem; }
+      .hero .tagline { font-size: 1rem; }
+      .services { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <h1>AI Arranger合同会社</h1>
+    <p class="subtitle">AI Arranger LLC</p>
+    <p class="tagline">AIを活用した業務改善・システム開発・コンサルティングで、企業のDX推進を支援します。</p>
+  </div>
+</header>
+
+<section>
+  <div class="container">
+    <h2>事業内容</h2>
+    <div class="services">
+      <div class="service-card">
+        <h3>AI/DXコンサルティング</h3>
+        <p>AI導入戦略の策定から実装まで。Claude、GPT等の最新AI技術を活用し、業務プロセスの自動化・効率化を支援します。</p>
+      </div>
+      <div class="service-card">
+        <h3>システム開発</h3>
+        <p>Webアプリケーション、業務システム、SaaSプロダクトの企画・設計・開発・運用。フルスタックで対応します。</p>
+      </div>
+      <div class="service-card">
+        <h3>プロダクト開発</h3>
+        <p>会議意思決定支援システム「MOGI」をはじめ、AI技術を活用した独自プロダクトを開発・提供します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>代表者プロフィール</h2>
+    <div class="profile">
+      <div class="profile-text">
+        <h3>許田 剛直（きよだ たけなお）</h3>
+        <p>ソフトウェアエンジニア。AI/機械学習、Webアプリケーション開発、クラウドインフラ（AWS）を専門とする。AWSハッカソンにて会議意思決定支援システム「MOGI」を開発。AI技術を活用した業務改善と、AI主導の組織運営の実験・知見蓄積に取り組んでいる。</p>
+        <div class="skills">
+          <span class="skill-tag">TypeScript</span>
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">React</span>
+          <span class="skill-tag">Node.js</span>
+          <span class="skill-tag">AWS</span>
+          <span class="skill-tag">Claude API</span>
+          <span class="skill-tag">AI/ML</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container company-info">
+    <h2>会社概要</h2>
+    <table>
+      <tr><th>商号</th><td>AI Arranger合同会社</td></tr>
+      <tr><th>設立</th><td>2026年4月（予定）</td></tr>
+      <tr><th>代表社員</th><td>許田 剛直</td></tr>
+      <tr><th>所在地</th><td>東京都渋谷区</td></tr>
+      <tr><th>資本金</th><td>100万円</td></tr>
+      <tr><th>事業内容</th><td>
+        AI活用コンサルティング<br>
+        システム・ソフトウェア開発<br>
+        SaaS・クラウドサービスの企画・開発・提供<br>
+        データ分析・情報処理<br>
+        研修・セミナーの企画・運営
+      </td></tr>
+      <tr><th>決算期</th><td>1月</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="contact-section">
+  <div class="container">
+    <h2>お問い合わせ</h2>
+    <p>お仕事のご相談・お見積もりなど、お気軽にお問い合わせください。</p>
+    <p class="contact-email"><a href="mailto:t-kiyoda@aiarranger.jp">t-kiyoda@aiarranger.jp</a></p>
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 AI Arranger合同会社 All rights reserved.</p>
+</footer>
+
+</body>
+</html>
