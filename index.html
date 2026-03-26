@@ -931,90 +931,53 @@ a.seminars__item {
 
 /* ===== CONTACT ===== */
 .contact {
-  padding: 3rem 0 0;
+  padding: 2.5rem 0 0;
   background: var(--bg);
   border-top: 8px solid var(--red);
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
-.contact__inner {
-  display: grid;
-  grid-template-columns: 1fr 4px 1fr;
-  gap: 3rem;
-  align-items: start;
-}
-
-.contact__divider {
-  background: var(--red);
-  height: 100%;
-  min-height: 300px;
-}
-
-.contact__info {
-  padding-right: 2rem;
+.contact__info-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: baseline;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--black);
 }
 
 .contact__company {
   font-family: var(--font-jp);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 2rem;
 }
 
-.contact__detail {
-  margin-bottom: 1.25rem;
-}
-
-.contact__detail-label {
-  font-family: var(--font-body);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--red);
-  margin-bottom: 0.25rem;
-}
-
-.contact__detail-value {
+.contact__detail-inline {
   font-family: var(--font-jp);
-  font-size: 1rem;
-  color: var(--black);
+  font-size: 0.9rem;
+  color: #555;
 }
 
-.contact__detail-value a {
-  border-bottom: 1px solid var(--red);
-  transition: color 0.2s;
-}
-
-.contact__detail-value a:hover {
+.contact__detail-inline a {
   color: var(--red);
+  border-bottom: 1px solid var(--red);
+  text-decoration: none;
 }
 
 .contact__form {
-  padding-left: 2rem;
-}
-
-.contact__form {
-  min-height: 400px;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  flex: 1;
 }
 
 .contact__form iframe {
   border-radius: 4px;
   background: var(--white);
-}
-
-.contact__form-placeholder {
-  border: 2px dashed #ccc;
-  padding: 2.5rem 2rem;
-  text-align: center;
-}
-
-.contact__form-placeholder-title {
-  font-family: var(--font-jp);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #999;
-  margin-bottom: 1rem;
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
 }
 
 .contact__form-placeholder-text {
@@ -1109,22 +1072,8 @@ a.seminars__item {
     grid-template-columns: 1fr;
   }
 
-  .contact__inner {
-    grid-template-columns: 1fr;
-  }
-
-  .contact__divider {
-    height: 4px;
-    min-height: auto;
-    width: 100%;
-  }
-
-  .contact__info {
-    padding-right: 0;
-  }
-
-  .contact__form {
-    padding-left: 0;
+  .contact__info-bar {
+    gap: 1rem;
   }
 }
 
@@ -1469,40 +1418,21 @@ a.seminars__item {
       <h2 class="section-title">お問い合わせ</h2>
       <hr class="red-rule">
     </div>
-    <div class="contact__inner">
-      <div class="contact__info">
-        <h3 class="contact__company">AI Arranger合同会社</h3>
-        <div class="contact__detail">
-          <div class="contact__detail-label">Representative</div>
-          <div class="contact__detail-value">許田 剛直</div>
-        </div>
-        <div class="contact__detail">
-          <div class="contact__detail-label">Location</div>
-          <div class="contact__detail-value">埼玉県所沢市</div>
-        </div>
-        <div class="contact__detail">
-          <div class="contact__detail-label">Email</div>
-          <div class="contact__detail-value"><a href="mailto:t-kiyoda@aiarranger.jp">t-kiyoda@aiarranger.jp</a></div>
-        </div>
-        <div class="contact__detail">
-          <div class="contact__detail-label">Website</div>
-          <div class="contact__detail-value"><a href="https://aiarranger.jp" target="_blank" rel="noopener noreferrer">aiarranger.jp</a></div>
-        </div>
-      </div>
-      <div class="contact__divider"></div>
-      <div class="contact__form">
-        <iframe
-          src="https://docs.google.com/forms/d/e/1FAIpQLSf6QFTPgRlixZjN2cVZmnHWV0lXvlzwcbqWAAAEsJVRHYKgQg/viewform?embedded=true"
-          width="100%"
-          height="100%"
-          frameborder="0"
-          marginheight="0"
-          marginwidth="0"
-          title="お問い合わせフォーム"
-          style="min-height: 500px;">
-          読み込んでいます…
-        </iframe>
-      </div>
+    <div class="contact__info-bar">
+      <h3 class="contact__company">AI Arranger合同会社</h3>
+      <span class="contact__detail-inline">許田 剛直</span>
+      <span class="contact__detail-inline">埼玉県所沢市</span>
+      <span class="contact__detail-inline"><a href="mailto:t-kiyoda@aiarranger.jp">t-kiyoda@aiarranger.jp</a></span>
+    </div>
+    <div class="contact__form">
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSf6QFTPgRlixZjN2cVZmnHWV0lXvlzwcbqWAAAEsJVRHYKgQg/viewform?embedded=true"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="お問い合わせフォーム">
+        読み込んでいます…
+      </iframe>
     </div>
   </div>
   <footer class="footer">
