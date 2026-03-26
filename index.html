@@ -1,158 +1,1516 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Arranger合同会社</title>
-  <meta name="description" content="AI Arranger合同会社 - AI技術を活用した業務改善・システム開発・コンサルティング">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Hiragino Sans', sans-serif; color: #1a1a2e; line-height: 1.8; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Arranger合同会社 | AIで組織を動かす</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    .hero {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-      color: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
-    .hero h1 { font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: 0.05em; }
-    .hero .subtitle { font-size: 1.1rem; color: #b0c4de; margin-bottom: 2rem; }
-    .hero .tagline { font-size: 1.3rem; font-weight: 300; max-width: 600px; margin: 0 auto; }
+:root {
+  --red: #e42313;
+  --black: #0a0a0a;
+  --white: #ffffff;
+  --bg: #fafafa;
+  --font-display: 'Montserrat', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+  --grid-gap: 2rem;
+}
 
-    .container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  scroll-snap-type: y mandatory;
+}
 
-    section { padding: 60px 20px; }
-    section:nth-child(even) { background: #f8f9fa; }
-    h2 { font-size: 1.5rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #0f3460; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--black);
+  line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-    .services { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-top: 1.5rem; }
-    .service-card {
-      background: #fff;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 24px;
-    }
-    .service-card h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: #0f3460; }
-    .service-card p { font-size: 0.9rem; color: #555; }
+img {
+  max-width: 100%;
+  display: block;
+}
 
-    .company-info table { width: 100%; border-collapse: collapse; }
-    .company-info th, .company-info td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e0e0e0; }
-    .company-info th { width: 30%; background: #f5f5f5; font-weight: 600; white-space: nowrap; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 
-    .profile { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
-    .profile-text { flex: 1; min-width: 250px; }
-    .profile-text h3 { margin-bottom: 0.5rem; }
-    .skills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    .skill-tag {
-      background: #e8eaf6;
-      color: #1a237e;
-      padding: 4px 12px;
-      border-radius: 16px;
-      font-size: 0.85rem;
-    }
+ul, ol {
+  list-style: none;
+}
 
-    .contact-section { background: #1a1a2e; color: #fff; text-align: center; }
-    .contact-section h2 { color: #fff; border-bottom-color: #4a6fa5; }
-    .contact-email { font-size: 1.2rem; margin-top: 1rem; }
-    .contact-email a { color: #7ec8e3; text-decoration: none; }
+/* ===== SCROLL SNAP ===== */
+.snap-section {
+  scroll-snap-align: start;
+  scroll-margin-top: 64px;
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
-    footer { background: #111; color: #888; text-align: center; padding: 20px; font-size: 0.85rem; }
+.hero {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
 
-    @media (max-width: 600px) {
-      .hero h1 { font-size: 1.6rem; }
-      .hero .tagline { font-size: 1rem; }
-      .services { grid-template-columns: 1fr; }
-    }
-  </style>
+/* Hide red-block dividers for clean snap */
+.red-block {
+  display: none !important;
+}
+
+/* ===== UTILITY ===== */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.container--wide {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.section-label {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 2.75rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.red-rule {
+  width: 60px;
+  height: 4px;
+  background: var(--red);
+  border: none;
+  margin-bottom: 1rem;
+}
+
+/* ===== NAVIGATION ===== */
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: var(--black);
+  z-index: 1000;
+  border-bottom: 3px solid var(--red);
+}
+
+.nav__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.nav__logo {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: 0.05em;
+}
+
+.nav__logo span {
+  color: var(--red);
+}
+
+.nav__links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav__links a {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--white);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+.nav__links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--red);
+  transition: width 0.3s ease;
+}
+
+.nav__links a:hover::after {
+  width: 100%;
+}
+
+.nav__links a:hover {
+  color: var(--red);
+}
+
+/* Mobile menu toggle */
+.nav__toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+}
+
+.nav__toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--white);
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* ===== HERO ===== */
+.hero {
+  background: var(--red);
+  padding: 2rem;
+  margin-top: 64px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hero::before {
+  content: 'AI';
+  position: absolute;
+  top: -0.15em;
+  right: -0.05em;
+  font-family: var(--font-display);
+  font-size: 28rem;
+  color: rgba(255, 255, 255, 0.07);
+  line-height: 1;
+  pointer-events: none;
+  letter-spacing: -0.02em;
+}
+
+.hero__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero__title {
+  font-family: var(--font-display);
+  font-size: 5rem;
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero__tagline {
+  font-family: var(--font-jp);
+  font-size: 1.375rem;
+  font-weight: 400;
+  color: var(--white);
+  letter-spacing: 0.08em;
+  margin-bottom: 3rem;
+  opacity: 0.95;
+}
+
+.hero__actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 1rem 2.5rem;
+  border: 2px solid var(--white);
+  background: var(--white);
+  color: var(--red);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-radius: 0;
+}
+
+.btn:hover {
+  background: transparent;
+  color: var(--white);
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--white);
+}
+
+.btn--outline:hover {
+  background: var(--white);
+  color: var(--red);
+}
+
+.btn--dark {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--white);
+}
+
+.btn--dark:hover {
+  background: transparent;
+  color: var(--red);
+  border-color: var(--red);
+}
+
+/* ===== RED DIVIDER BLOCK ===== */
+.red-block {
+  background: var(--red);
+  height: 8px;
+}
+
+.red-block--thick {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.red-block--thick .label {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+/* ===== ABOUT (事業内容) ===== */
+.about {
+  padding: 3rem 0;
+  background: var(--bg);
+  border-top: 8px solid var(--red);
+}
+
+.about__header {
+  margin-bottom: 2rem;
+}
+
+.about__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.about__card {
+  padding-top: 1.25rem;
+  border-top: 5px solid var(--black);
+}
+
+.about__card:first-child {
+  border-top-color: var(--red);
+}
+
+.about__card-number {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  opacity: 0.3;
+}
+
+.about__card:first-child .about__card-number {
+  opacity: 1;
+}
+
+.about__card-icon {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+/* CSS-only icons */
+.icon-product {
+  border: 3px solid var(--black);
+  width: 40px;
+  height: 40px;
+  position: relative;
+}
+
+.icon-product::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 12px;
+  height: 12px;
+  background: var(--red);
+}
+
+.icon-product::after {
+  content: '';
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  width: 16px;
+  height: 3px;
+  background: var(--black);
+  box-shadow: 0 -6px 0 var(--black);
+}
+
+.icon-seminar {
+  width: 40px;
+  height: 40px;
+  border-bottom: 3px solid var(--black);
+  position: relative;
+}
+
+.icon-seminar::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 4px;
+  width: 10px;
+  height: 28px;
+  border: 3px solid var(--black);
+  border-bottom: none;
+}
+
+.icon-seminar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 4px;
+  width: 10px;
+  height: 20px;
+  border: 3px solid var(--black);
+  border-bottom: none;
+}
+
+.icon-consulting {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--black);
+  border-radius: 50%;
+  position: relative;
+}
+
+.icon-consulting::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: var(--red);
+  border-radius: 50%;
+}
+
+.about__card-title {
+  font-family: var(--font-jp);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.about__card-subtitle {
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  letter-spacing: 0.15em;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.about__card-text {
+  font-family: var(--font-jp);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: #444;
+}
+
+/* ===== PRODUCT (MOGI) ===== */
+.product {
+  background: var(--black);
+  color: var(--white);
+  padding: 3rem 0;
+  position: relative;
+  overflow: hidden;
+  border-top: 8px solid var(--red);
+}
+
+.product::after {
+  content: 'MOGI';
+  position: absolute;
+  bottom: -0.2em;
+  right: -0.05em;
+  font-family: var(--font-display);
+  font-size: 20rem;
+  color: rgba(255, 255, 255, 0.03);
+  line-height: 1;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+.product__badge {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 0.4rem 1rem;
+  border: 2px solid var(--red);
+  color: var(--red);
+  margin-bottom: 1rem;
+}
+
+.product__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.product__title {
+  font-family: var(--font-display);
+  font-size: 5.5rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.product__subtitle {
+  font-family: var(--font-body);
+  font-size: 1.125rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+  margin-bottom: 1rem;
+}
+
+.product__patent {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--red);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+.product__desc {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  line-height: 1.9;
+  max-width: 700px;
+  opacity: 0.85;
+  margin-bottom: 1.5rem;
+}
+
+.product__features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.product__feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  transition: border-color 0.3s;
+}
+
+.product__feature:hover {
+  border-color: var(--red);
+}
+
+.product__feature-marker {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--red);
+  margin-top: 0.5rem;
+}
+
+.product__feature-text {
+  font-family: var(--font-jp);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+.product__feature-text strong {
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.product__devpost {
+  margin-top: 1.25rem;
+}
+
+.product__devpost a {
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  color: var(--red);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--red);
+  padding-bottom: 2px;
+  transition: opacity 0.3s;
+}
+
+.product__devpost a:hover {
+  opacity: 0.7;
+}
+
+/* Flow steps */
+.product__flow {
+  margin-bottom: 3rem;
+}
+
+.product__flow-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.product__flow-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+.product__flow-step {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.product__flow-step-num {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.product__flow-step-label {
+  font-family: var(--font-jp);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.product__flow-step-arrow {
+  position: absolute;
+  right: -1.1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 10px solid var(--red);
+  z-index: 2;
+}
+
+/* Tech tags */
+.product__tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.product__tech-tag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  padding: 0.4rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+}
+
+/* ===== LOCAL LLM ===== */
+.local-llm {
+  padding: 0;
+  background: var(--bg);
+  border-top: 8px solid var(--red);
+}
+
+.local-llm__header {
+  background: var(--red);
+  padding: 1.5rem 0;
+}
+
+.local-llm__header .container {
+  display: flex;
+  align-items: baseline;
+  gap: 2rem;
+}
+
+.local-llm__header-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: 0.05em;
+}
+
+.local-llm__header-sub {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  color: var(--white);
+  opacity: 0.9;
+}
+
+.local-llm__body {
+  padding: 2.5rem 0;
+}
+
+.local-llm__features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-bottom: 2rem;
+}
+
+.local-llm__feature {
+  padding: 1rem 0;
+}
+
+.local-llm__feature-num {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--red);
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+
+.local-llm__feature-title {
+  font-family: var(--font-jp);
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.local-llm__feature-text {
+  font-family: var(--font-jp);
+  font-size: 0.9375rem;
+  color: #555;
+  line-height: 1.8;
+}
+
+.local-llm__feature-highlight {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--red);
+  letter-spacing: 0.05em;
+  margin-top: 0.5rem;
+}
+
+/* Steps */
+.local-llm__steps-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
+
+.local-llm__steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+  margin-bottom: 4rem;
+}
+
+.local-llm__step {
+  padding: 2rem;
+  border-top: 4px solid var(--red);
+  background: var(--white);
+}
+
+.local-llm__step-num {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+}
+
+.local-llm__step-title {
+  font-family: var(--font-jp);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.local-llm__step-text {
+  font-family: var(--font-jp);
+  font-size: 0.875rem;
+  color: #555;
+  line-height: 1.7;
+}
+
+.local-llm__cta {
+  text-align: center;
+  padding: 2rem;
+  border: 3px solid var(--black);
+  background: var(--white);
+}
+
+.local-llm__cta-text {
+  font-family: var(--font-jp);
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.local-llm__cta-sub {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  color: #666;
+}
+
+/* ===== SEMINARS ===== */
+.seminars {
+  background: var(--white);
+  padding: 3rem 0;
+  border-top: 8px solid var(--red);
+}
+
+.seminars__header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 2rem;
+  align-items: end;
+}
+
+.seminars__stats {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.seminars__stat {
+  text-align: left;
+}
+
+.seminars__stat-num {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--black);
+}
+
+.seminars__stat-num span {
+  color: var(--red);
+}
+
+.seminars__stat-label {
+  font-family: var(--font-jp);
+  font-size: 0.8125rem;
+  color: #666;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+.seminars__list {
+  border-top: 2px solid var(--black);
+}
+
+.seminars__item {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 1.5rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.seminars__item:hover {
+  background: rgba(228, 35, 19, 0.03);
+}
+
+.seminars__item-date {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #666;
+  white-space: nowrap;
+}
+
+.seminars__item-title {
+  font-family: var(--font-jp);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.seminars__item-count {
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--red);
+  white-space: nowrap;
+}
+
+.seminars__cta {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+/* ===== CONTACT ===== */
+.contact {
+  padding: 3rem 0 0;
+  background: var(--bg);
+  border-top: 8px solid var(--red);
+  justify-content: space-between;
+}
+
+.contact__inner {
+  display: grid;
+  grid-template-columns: 1fr 4px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.contact__divider {
+  background: var(--red);
+  height: 100%;
+  min-height: 300px;
+}
+
+.contact__info {
+  padding-right: 2rem;
+}
+
+.contact__company {
+  font-family: var(--font-jp);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.contact__detail {
+  margin-bottom: 1.25rem;
+}
+
+.contact__detail-label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 0.25rem;
+}
+
+.contact__detail-value {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  color: var(--black);
+}
+
+.contact__detail-value a {
+  border-bottom: 1px solid var(--red);
+  transition: color 0.2s;
+}
+
+.contact__detail-value a:hover {
+  color: var(--red);
+}
+
+.contact__form {
+  padding-left: 2rem;
+}
+
+.contact__form-placeholder {
+  border: 2px dashed #ccc;
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+
+.contact__form-placeholder-title {
+  font-family: var(--font-jp);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #999;
+  margin-bottom: 1rem;
+}
+
+.contact__form-placeholder-text {
+  font-family: var(--font-jp);
+  font-size: 0.9375rem;
+  color: #999;
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  background: var(--black);
+  color: var(--white);
+  padding: 1.5rem 0;
+  border-top: 4px solid var(--red);
+  margin-top: auto;
+}
+
+.footer__inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer__logo {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.15em;
+}
+
+.footer__logo span {
+  color: var(--red);
+}
+
+.footer__copy {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .product__layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .snap-section {
+    min-height: auto;
+  }
+  .hero__title {
+    font-size: 4rem;
+  }
+
+  .hero::before {
+    font-size: 18rem;
+  }
+
+  .product__title {
+    font-size: 4.5rem;
+  }
+
+  .product__features {
+    grid-template-columns: 1fr;
+  }
+
+  .product__flow-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .product__flow-step:nth-child(2) .product__flow-step-arrow,
+  .product__flow-step:last-child .product__flow-step-arrow {
+    display: none;
+  }
+
+  .about__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .local-llm__features {
+    grid-template-columns: 1fr;
+  }
+
+  .local-llm__steps {
+    grid-template-columns: 1fr;
+  }
+
+  .seminars__header {
+    grid-template-columns: 1fr;
+  }
+
+  .contact__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .contact__divider {
+    height: 4px;
+    min-height: auto;
+    width: 100%;
+  }
+
+  .contact__info {
+    padding-right: 0;
+  }
+
+  .contact__form {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav__links {
+    display: none;
+    position: absolute;
+    top: 64px;
+    left: 0;
+    width: 100%;
+    background: var(--black);
+    flex-direction: column;
+    padding: 2rem;
+    gap: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav__links.active {
+    display: flex;
+  }
+
+  .nav__toggle {
+    display: flex;
+  }
+
+  .hero {
+    padding: 8rem 1.5rem 4rem;
+  }
+
+  .hero__title {
+    font-size: 2.75rem;
+  }
+
+  .hero__tagline {
+    font-size: 1.125rem;
+  }
+
+  .hero::before {
+    font-size: 12rem;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+  }
+
+  .product__title {
+    font-size: 3rem;
+  }
+
+  .product__flow-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .product__flow-step .product__flow-step-arrow {
+    display: none;
+  }
+
+  .local-llm__header .container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .local-llm__header-title {
+    font-size: 2rem;
+  }
+
+  .seminars__stats {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .seminars__stat-num {
+    font-size: 3rem;
+  }
+
+  .seminars__item {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .seminars__item-date {
+    font-size: 0.75rem;
+  }
+
+  .footer__inner {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .container {
+    padding: 0 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__title {
+    font-size: 2.25rem;
+  }
+
+  .product__title {
+    font-size: 2.5rem;
+  }
+
+  .hero__actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    text-align: center;
+  }
+}
+</style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="container">
-    <h1>AI Arranger合同会社</h1>
-    <p class="subtitle">AI Arranger LLC</p>
-    <p class="tagline">AIを活用した業務改善・システム開発・コンサルティングで、企業のDX推進を支援します。</p>
+<!-- ===== NAVIGATION ===== -->
+<nav class="nav">
+  <div class="nav__inner">
+    <a href="#" class="nav__logo"><span>AI</span> ARRANGER</a>
+    <button class="nav__toggle" aria-label="Menu" onclick="document.querySelector('.nav__links').classList.toggle('active')">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav__links">
+      <a href="#about">About</a>
+      <a href="#product">Product</a>
+      <a href="#local-llm">Local LLM</a>
+      <a href="#seminars">Seminars</a>
+      <a href="#contact">Contact</a>
+    </div>
   </div>
-</header>
+</nav>
 
-<section>
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero__inner">
+    <h1 class="hero__title">AI<br>ARRANGER</h1>
+    <p class="hero__tagline">AIで組織を動かす</p>
+    <div class="hero__actions">
+      <a href="#product" class="btn">View Product</a>
+      <a href="#contact" class="btn btn--outline">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RED DIVIDER ===== -->
+<div class="red-block"></div>
+
+<!-- ===== ABOUT ===== -->
+<section class="about snap-section" id="about">
   <div class="container">
-    <h2>事業内容</h2>
-    <div class="services">
-      <div class="service-card">
-        <h3>AI/DXコンサルティング</h3>
-        <p>AI導入戦略の策定から実装まで。Claude、GPT等の最新AI技術を活用し、業務プロセスの自動化・効率化を支援します。</p>
+    <div class="about__header">
+      <p class="section-label">What We Do</p>
+      <h2 class="section-title">事業内容</h2>
+      <hr class="red-rule">
+    </div>
+    <div class="about__grid">
+      <div class="about__card">
+        <h3 class="about__card-title">プロダクト開発</h3>
+        <p class="about__card-subtitle">MOGI</p>
+        <p class="about__card-text">会議の意思決定を支援するAIオーバーレイツール「MOGI」を開発中。特許出願済。</p>
       </div>
-      <div class="service-card">
-        <h3>システム開発</h3>
-        <p>Webアプリケーション、業務システム、SaaSプロダクトの企画・設計・開発・運用。フルスタックで対応します。</p>
+      <div class="about__card">
+        <h3 class="about__card-title">勉強会・研修企画</h3>
+        <p class="about__card-subtitle">Connpass Events</p>
+        <p class="about__card-text">connpassで累計1,000名以上参加。AWS・AI・要件定義など実践的な技術勉強会を企画・運営。</p>
       </div>
-      <div class="service-card">
-        <h3>プロダクト開発</h3>
-        <p>会議意思決定支援システム「MOGI」をはじめ、AI技術を活用した独自プロダクトを開発・提供します。</p>
+      <div class="about__card">
+        <h3 class="about__card-title">AIコンサルティング</h3>
+        <p class="about__card-subtitle">Local LLM</p>
+        <p class="about__card-text">ローカルLLM導入支援を中心に、セキュリティ要件の厳しい組織でもAI活用を実現。</p>
       </div>
     </div>
   </div>
 </section>
 
-<section>
+<!-- ===== RED DIVIDER WITH LABEL ===== -->
+<div class="red-block red-block--thick">
+  <span class="label">Product</span>
+</div>
+
+<!-- ===== PRODUCT (MOGI) ===== -->
+<section class="product snap-section" id="product">
   <div class="container">
-    <h2>代表者プロフィール</h2>
-    <div class="profile">
-      <div class="profile-text">
-        <h3>許田 剛直（きよだ たけなお）</h3>
-        <p>システム業務のゼネラリスト。23年以上のIT業界経験を持ち、生成AIを「現場の業務」と「統制（セキュリティ・監査・金融庁対応）」の両方に乗せて回すことを得意とする。富士通、LINE、SBI証券、GMOあおぞらネット銀行などを経て独立。金融・暗号資産領域でのPM/PMO、新規事業立ち上げ、金融庁対応を多数経験。</p>
-        <p style="margin-top: 0.8rem;">直近は「AIを使える人を増やす」「AIで意思決定を速くする」を主軸に、非エンジニア向け生成AI勉強会の継続開催、ローカルLLM+RAGによる社内ナレッジ検索の構築、AI活用DXコンサルティングを推進。ハッカソンにも積極的に参加し、Difyハッカソン3位入賞、Anthropicハッカソン・Google Cloudハッカソンにも参加。</p>
-        <div class="skills">
-          <span class="skill-tag">生成AI活用</span>
-          <span class="skill-tag">PM/PMO</span>
-          <span class="skill-tag">金融・暗号資産</span>
-          <span class="skill-tag">TypeScript</span>
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">React / Next.js</span>
-          <span class="skill-tag">AWS / GCP</span>
-          <span class="skill-tag">Claude API</span>
-          <span class="skill-tag">RAG / LLM</span>
-          <span class="skill-tag">中小企業診断士</span>
-          <span class="skill-tag">システム監査</span>
+    <div class="product__badge">開発中・特許出願中</div>
+    <div class="product__layout">
+      <div>
+        <h2 class="product__title">MOGI</h2>
+        <p class="product__subtitle">Meeting Overlay for Group Intelligence</p>
+        <p class="product__patent">特許出願番号: 特願2026-049424</p>
+        <p class="product__desc">会議中の発言をリアルタイムで分類・構造化し、複数のAIペルソナによる多角的審議で偽コンセンサスを検出。組織の意思決定品質を飛躍的に向上させます。</p>
+        <div class="product__devpost">
+          <a href="https://devpost.com/software/mogi-meeting-overlay-for-group-intelligence" target="_blank" rel="noopener noreferrer">Devpost で詳細を見る &rarr;</a>
+        </div>
+        <div class="product__tech">
+          <span class="product__tech-tag">Amazon Bedrock</span>
+          <span class="product__tech-tag">Transcribe</span>
+          <span class="product__tech-tag">Lambda</span>
+          <span class="product__tech-tag">DynamoDB</span>
+          <span class="product__tech-tag">Next.js</span>
+          <span class="product__tech-tag">CDK</span>
+        </div>
+      </div>
+      <div class="product__features">
+        <div class="product__feature">
+          <div class="product__feature-marker"></div>
+          <div class="product__feature-text">
+            <strong>リアルタイム発言分類</strong>決定・課題・タスクを自動でカード化
+          </div>
+        </div>
+        <div class="product__feature">
+          <div class="product__feature-marker"></div>
+          <div class="product__feature-text">
+            <strong>マルチペルソナ審議</strong>5つのAI視点でGO/HOLD/NO判定
+          </div>
+        </div>
+        <div class="product__feature">
+          <div class="product__feature-marker"></div>
+          <div class="product__feature-text">
+            <strong>偽コンセンサス検出</strong>見落としやすいリスクを表面化
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section>
-  <div class="container company-info">
-    <h2>会社概要</h2>
-    <table>
-      <tr><th>商号</th><td>AI Arranger合同会社</td></tr>
-      <tr><th>設立</th><td>2026年4月（予定）</td></tr>
-      <tr><th>代表社員</th><td>許田 剛直</td></tr>
-      <tr><th>所在地</th><td>東京都渋谷区</td></tr>
-      <tr><th>資本金</th><td>100万円</td></tr>
-      <tr><th>事業内容</th><td>
-        AI活用コンサルティング<br>
-        システム・ソフトウェア開発<br>
-        SaaS・クラウドサービスの企画・開発・提供<br>
-        データ分析・情報処理<br>
-        研修・セミナーの企画・運営
-      </td></tr>
-      <tr><th>決算期</th><td>1月</td></tr>
-    </table>
+<!-- ===== RED DIVIDER ===== -->
+<div class="red-block"></div>
+
+<!-- ===== LOCAL LLM ===== -->
+<section class="local-llm snap-section" id="local-llm">
+  <div class="local-llm__header">
+    <div class="container">
+      <h2 class="local-llm__header-title">LOCAL LLM</h2>
+      <p class="local-llm__header-sub">ローカルLLM導入支援</p>
+    </div>
+  </div>
+  <div class="local-llm__body">
+    <div class="container">
+      <div class="local-llm__features">
+        <div class="local-llm__feature">
+          <div class="local-llm__feature-num">01</div>
+          <h3 class="local-llm__feature-title">データ外部送信ゼロ</h3>
+          <p class="local-llm__feature-text">社内ネットワーク内で完結するLLM環境を構築。機密情報がクラウドに送信されることはありません。</p>
+        </div>
+        <div class="local-llm__feature">
+          <div class="local-llm__feature-num">02</div>
+          <h3 class="local-llm__feature-title">低コスト導入</h3>
+          <p class="local-llm__feature-text">GPU搭載PC 1台から導入可能。月額APIコスト不要で長期的なコスト削減を実現。</p>
+          <p class="local-llm__feature-highlight">30〜50万円</p>
+        </div>
+        <div class="local-llm__feature">
+          <div class="local-llm__feature-num">03</div>
+          <h3 class="local-llm__feature-title">RAGで社内検索</h3>
+          <p class="local-llm__feature-text">社内ドキュメントをRAGで統合。自然言語で社内情報を横断検索できる環境を構築。</p>
+        </div>
+      </div>
+
+      <div class="local-llm__cta">
+        <p class="local-llm__cta-text">「セキュリティが理由でAI導入が進まない」を解決します</p>
+        <p class="local-llm__cta-sub">まずはお気軽にご相談ください</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<section class="contact-section">
+<!-- ===== SEMINARS ===== -->
+<section class="seminars snap-section" id="seminars">
   <div class="container">
-    <h2>お問い合わせ</h2>
-    <p>お仕事のご相談・お見積もりなど、お気軽にお問い合わせください。</p>
-    <p class="contact-email"><a href="mailto:t-kiyoda@aiarranger.jp">t-kiyoda@aiarranger.jp</a></p>
+    <div class="seminars__header">
+      <div>
+        <p class="section-label">Community</p>
+        <h2 class="section-title">勉強会</h2>
+        <hr class="red-rule">
+      </div>
+      <div class="seminars__stats">
+        <div class="seminars__stat">
+          <div class="seminars__stat-num">12<span>+</span></div>
+          <div class="seminars__stat-label">開催回数</div>
+        </div>
+        <div class="seminars__stat">
+          <div class="seminars__stat-num">1,100<span>+</span></div>
+          <div class="seminars__stat-label">累計参加者数</div>
+        </div>
+        <div class="seminars__stat">
+          <div class="seminars__stat-num">2022<span>〜</span></div>
+          <div class="seminars__stat-label">活動開始</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seminars__list">
+      <div class="seminars__item">
+        <div class="seminars__item-date">2026.02.28</div>
+        <div class="seminars__item-title">Agent Skillsなんてこわくないもん！</div>
+        <div class="seminars__item-count">58/124人</div>
+      </div>
+      <div class="seminars__item">
+        <div class="seminars__item-date">2025.07.21</div>
+        <div class="seminars__item-title">AWSなんてこわくないもん！ 3rd Season</div>
+        <div class="seminars__item-count">44/222人</div>
+      </div>
+      <div class="seminars__item">
+        <div class="seminars__item-date">2025.03.15</div>
+        <div class="seminars__item-title">非エンジニアでもcursor使ってサービス作れるもん！</div>
+        <div class="seminars__item-count">61/70人</div>
+      </div>
+      <div class="seminars__item">
+        <div class="seminars__item-date">2024.09.21</div>
+        <div class="seminars__item-title">AWSなんてこわくないもん！ 2nd Season</div>
+        <div class="seminars__item-count">78/222人</div>
+      </div>
+      <div class="seminars__item">
+        <div class="seminars__item-date">2024.03.02</div>
+        <div class="seminars__item-title">AWSなんてこわくないもん！</div>
+        <div class="seminars__item-count">358/400人</div>
+      </div>
+      <div class="seminars__item">
+        <div class="seminars__item-date">2023.09.03</div>
+        <div class="seminars__item-title">でーたべーすぺしゃりすとなんてこわくないもん！</div>
+        <div class="seminars__item-count">400/500人</div>
+      </div>
+    </div>
+
+    <div class="seminars__cta">
+      <a href="#contact" class="btn btn--dark">カスタム勉強会企画のご相談</a>
+    </div>
   </div>
 </section>
 
-<footer>
-  <p>&copy; 2026 AI Arranger合同会社 All rights reserved.</p>
-</footer>
+<!-- ===== RED DIVIDER ===== -->
+<div class="red-block"></div>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact snap-section" id="contact">
+  <div class="container">
+    <div class="about__header">
+      <p class="section-label">Get in Touch</p>
+      <h2 class="section-title">お問い合わせ</h2>
+      <hr class="red-rule">
+    </div>
+    <div class="contact__inner">
+      <div class="contact__info">
+        <h3 class="contact__company">AI Arranger合同会社</h3>
+        <div class="contact__detail">
+          <div class="contact__detail-label">Representative</div>
+          <div class="contact__detail-value">許田 剛直</div>
+        </div>
+        <div class="contact__detail">
+          <div class="contact__detail-label">Location</div>
+          <div class="contact__detail-value">埼玉県所沢市</div>
+        </div>
+        <div class="contact__detail">
+          <div class="contact__detail-label">Email</div>
+          <div class="contact__detail-value"><a href="mailto:t-kiyoda@aiarranger.jp">t-kiyoda@aiarranger.jp</a></div>
+        </div>
+        <div class="contact__detail">
+          <div class="contact__detail-label">Website</div>
+          <div class="contact__detail-value"><a href="https://aiarranger.jp" target="_blank" rel="noopener noreferrer">aiarranger.jp</a></div>
+        </div>
+      </div>
+      <div class="contact__divider"></div>
+      <div class="contact__form">
+        <div class="contact__form-placeholder">
+          <div class="contact__form-placeholder-title">準備中</div>
+          <p class="contact__form-placeholder-text">お問い合わせフォームは現在準備中です。<br>お急ぎの場合は、メールにてご連絡ください。</p>
+          <a href="mailto:t-kiyoda@aiarranger.jp" class="btn btn--dark">メールで問い合わせる</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__logo"><span>AI</span> ARRANGER</div>
+        <div class="footer__copy">&copy; 2026 AI Arranger合同会社 All Rights Reserved.</div>
+      </div>
+    </div>
+  </footer>
+</section>
+
+<script>
+// Smooth scroll for nav links with offset for fixed nav
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      var offset = 64;
+      var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+    }
+    // Close mobile menu if open
+    var links = document.querySelector('.nav__links');
+    if (links) links.classList.remove('active');
+  });
+});
+</script>
 
 </body>
 </html>
