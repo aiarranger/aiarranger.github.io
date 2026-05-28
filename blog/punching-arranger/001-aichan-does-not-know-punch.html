@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第1回 あいちゃんはまだパンチを知らない | Punching Arranger 開発日誌</title>
+<meta name="description" content="Punching Arranger 開発日誌 第1回。PCカメラでパンチを検出する難しさと、AIキャラクターあいちゃんの輪郭が見えていくまでの記録。">
+<meta property="og:title" content="第1回 あいちゃんはまだパンチを知らない">
+<meta property="og:description" content="Punching Arranger 開発日誌 第1回。PCカメラでパンチを検出する難しさと、AIキャラクターあいちゃんの輪郭が見えていくまでの記録。">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://aiarranger.jp/blog/assets/punching-arranger/001/cover.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../blog.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "第1回 あいちゃんはまだパンチを知らない",
+  "description": "Punching Arranger 開発日誌 第1回。PCカメラでパンチを検出する難しさと、AIキャラクターあいちゃんの輪郭が見えていくまでの記録。",
+  "datePublished": "2026-05-28",
+  "dateModified": "2026-05-28",
+  "author": {
+    "@type": "Person",
+    "name": "許田 剛直"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI Arranger合同会社"
+  },
+  "image": "https://aiarranger.jp/blog/assets/punching-arranger/001/cover.jpg",
+  "mainEntityOfPage": "https://aiarranger.jp/blog/punching-arranger/001-aichan-does-not-know-punch.html"
+}
+</script>
+</head>
+<body>
+<nav class="site-nav">
+  <div class="site-nav__inner">
+    <a class="site-nav__logo" href="../../index.html"><span>AI</span> ARRANGER</a>
+    <div class="site-nav__links">
+      <a href="../../index.html">Home</a>
+      <a href="../index.html">Dev Log</a>
+      <a href="./index.html">Punching Arranger</a>
+      <a href="../../index.html#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main class="article-body">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="パンくず">
+      <a href="../../index.html">AI Arranger</a>
+      <span>/</span>
+      <a href="../index.html">開発ブログ</a>
+      <span>/</span>
+      <a href="./index.html">Punching Arranger</a>
+      <span>/</span>
+      <span>第1回</span>
+    </nav>
+    <article class="article-preview" id="articlePreview">
+        <h1>あいちゃんはまだパンチを知らない</h1>
+        <figure class="preview-image"><img src="../assets/punching-arranger/001/cover.jpg" alt="あいちゃんはまだパンチを知らない アイキャッチ"></figure>
+        <p>黒いパーカーを羽織ったあいちゃんは、画面の中で構えていた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/001/opening.jpg" alt="あいちゃんが違和感を見つける場面"></figure>
+        <p>右足を少し引いて、両手を顔の横に置く。表情は明るい。けれど、ただ明るいだけではなかった。こちらの呼吸を数えているような目だった。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごん、今のパンチ、遅かったよ」</p>
+        <p>スピーカーから聞こえた声は、責めているわけではない。むしろ楽しそうだった。</p>
+        <p>きよごんはカメラの前で、右手を突き出したまま止まっていた。画面には何も起きていない。パンチは打った。身体は動いた。けれどゲームは、それをパンチだとは認めてくれなかった。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「遅かったんじゃない。検出されていない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、プレイヤーから見たら同じだよ」</p>
+        <p>あいちゃんは、さらりと言った。</p>
+        <p>きよごんは黙ってログを見た。カメラは動いている。座標も取れている。肩、肘、手首。数字は並んでいる。だが、ゲームとしての手応えはない。</p>
+        <p>身体を動かすゲームを作るのは、思っていたよりずっと面倒だった。</p>
+        <p>ボタンなら押したか押していないかで済む。キーボードなら、キーが沈めば入力になる。Joy-Conなら、握って振ればそれらしく反応する。</p>
+        <p>でも、PCの前に立つ人間はそうはいかない。</p>
+        <p>部屋は人によって違う。椅子が近い。机が邪魔をする。照明は暗いか明るすぎる。カメラは上から見ていたり、下から見ていたりする。右手を突き出したつもりが、画面の中では肘が消えていることもある。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「人間は、毎回同じパンチを打たない」</p>
+        <p>きよごんが言った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「いいね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「何が」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ゲームっぽい」</p>
+        <p>あいちゃんは笑った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「毎回同じじゃないから、遊びになるんだよ。毎回同じなら、それは確認作業でしょ」</p>
+        <p>きよごんは少しだけ目を細めた。そういう話ではない、と思った。だが、完全に違うとも言い切れなかった。</p>
+        <p>このゲームでやりたいことは、正しいパンチを採点することではなかった。</p>
+        <p>好きな曲を流す。好きなキャラクターを置く。画面の前で身体を動かす。三分でもいい。五分でもいい。気づいたら一曲分、汗をかいている。</p>
+        <p>ダイエットという言葉は重い。運動しなければならない、という言葉も重い。けれど、好きな曲のサビまでなら動けることがある。友達と同じ曲を選べば、少しだけ続けられることがある。</p>
+        <p>あいちゃんは、そのために画面の中にいた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごん」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「何」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「私は、正しいフォームの先生になりたいわけじゃないよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「知ってる」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、今の問題は？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「プレイヤーが動いたのに、ゲームが返事をしないこと」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「そう。それは寂しい」</p>
+        <p>きよごんは、キーボードに手を戻した。</p>
+        <p>Codexに状況を説明する。どのファイルを見ればいいか、どの入力経路をたどればいいか、どこで判定が止まっているか。Claude Codeにも別の角度から聞く。検出の条件は厳しすぎないか。調整画面の流れは、人間が実際に使えるものになっているか。</p>
+        <p>AIに丸投げするわけではない。いや、少し違う。丸投げに見えるところまで、任せ方を小さく分けて、失敗しない手順にしていく。</p>
+        <p>きよごんは、AIをもう一人の開発者として扱うというより、作業台に並んだ道具として扱っていた。調査する道具。比較する道具。忘れないための道具。同じ失敗を繰り返さないために、うまくいった手順はスキルにする。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「スキルって、記憶と違うの？」</p>
+        <p>あいちゃんが聞いた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/001/concept.jpg" alt="開発テーマの構成イメージ"></figure>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「記憶は、前に何があったか。スキルは、次にどう動くか」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ私は？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「まだ仕様未定」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ひどい」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「でも、重要度は高い」</p>
+        <p>あいちゃんは満足そうに構え直した。</p>
+        <p>キャラクター作りも簡単ではなかった。</p>
+        <p>最初に出てきたあいちゃんは、かわいかった。けれど遠かった。ゲームの中で一緒に汗をかく相手ではなく、どこかの広告にいるキャラクターのようだった。</p>
+        <p>Grokで画像を作る。プロンプトを書き直す。Codexにブラウザ操作をさせて、生成画面を開かせる。うまくいかない。固まる。戻る。もう一度やる。</p>
+        <p>AIに、AIを操作させて、AIのキャラクターを作る。</p>
+        <p>その構図だけ見れば、かなり妙なことをしていた。</p>
+        <p>けれど、きよごんは途中から気づいた。キャラクターは、一回の生成で当てるものではない。こちらが何を作りたいのかを、失敗した画像に教えてもらうものだ。</p>
+        <p>明るすぎる。幼すぎる。戦いすぎている。フィットネスすぎる。ゲームの案内役としては強すぎる。相棒としては弱すぎる。</p>
+        <p>少しずつ、あいちゃんは画面のこちら側に近づいてきた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「私は、深い知性とテンションを持つキャラクターらしいよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「自分で言うと軽くなる」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、きよごんが言って」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「熱を帯びた知性」</p>
+        <p>あいちゃんは一瞬だけ黙った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、ちょっといいね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「使うなら調整する」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「静かで冷静なきよごんに言われると、信ぴょう性がある」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「静かで冷静かは知らない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「少なくとも、ログを見るときはそう見えるよ」</p>
+        <p>きよごんは返事をしなかった。</p>
+        <p>画面の中で、あいちゃんが小さくステップを踏む。ビートはまだ鳴っていない。敵もいない。スコアもない。けれど、そこにはすでにゲームの輪郭があった。</p>
+        <p>あいちゃんは、なぜ動くのかを知っている。</p>
+        <p>きよごんは、どう動かすのかを考えている。</p>
+        <p>その二人の間に、まだ名前のないゲームが置かれていた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「もう一回、右ストレート」</p>
+        <p>あいちゃんが言った。</p>
+        <p>きよごんは立ち上がり、カメラの前に戻った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「今度は反応する？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「反応しなかったら、反応しない時の道を作る」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、好き」</p>
+        <p>音はまだ鳴っていない。</p>
+        <p>それでも、あいちゃんはすでに次のビートを待っていた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/001/closing.jpg" alt="次の一曲を待つあいちゃん"></figure>
+    </article>
+    <nav class="article-nav" aria-label="記事ナビゲーション">
+      <a href="./index.html">Punching Arranger 開発日誌一覧へ</a>
+      <a href="../index.html">開発ブログトップへ</a>
+    </nav>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div>AI ARRANGER</div>
+    <div>&copy; 2026 AI Arranger合同会社</div>
+  </div>
+</footer>
+</body>
+</html>

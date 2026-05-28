@@ -929,6 +929,76 @@ a.seminars__item {
   text-align: center;
 }
 
+/* ===== DEV LOG ===== */
+.dev-log {
+  padding: 3rem 0;
+  background: var(--bg);
+  border-top: 8px solid var(--red);
+}
+
+.dev-log__layout {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.dev-log__lead {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  line-height: 1.9;
+  color: #444;
+  margin-bottom: 1.5rem;
+  max-width: 620px;
+}
+
+.dev-log__list {
+  border-top: 2px solid var(--black);
+}
+
+.dev-log__item {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 1.25rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  align-items: center;
+  transition: background 0.2s;
+}
+
+.dev-log__item:hover {
+  background: rgba(228, 35, 19, 0.03);
+}
+
+.dev-log__item-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+.dev-log__item-title {
+  font-family: var(--font-jp);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.dev-log__item-meta {
+  font-family: var(--font-jp);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: #666;
+  margin-top: 0.2rem;
+}
+
+.dev-log__item-arrow {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--red);
+}
+
 /* ===== CONTACT ===== */
 .contact {
   padding: 2.5rem 0 0;
@@ -1132,6 +1202,10 @@ a.seminars__item {
     grid-template-columns: 1fr;
   }
 
+  .dev-log__layout {
+    grid-template-columns: 1fr;
+  }
+
   .contact__inner {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -1227,6 +1301,11 @@ a.seminars__item {
     font-size: 0.75rem;
   }
 
+  .dev-log__item {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+
   .footer__inner {
     flex-direction: column;
     gap: 1rem;
@@ -1273,6 +1352,7 @@ a.seminars__item {
       <a href="#product">Product</a>
       <a href="#local-llm">Local LLM</a>
       <a href="#seminars">Seminars</a>
+      <a href="#dev-log">Dev Log</a>
       <a href="#contact">Contact</a>
     </div>
   </div>
@@ -1472,6 +1552,42 @@ a.seminars__item {
 
     <div class="seminars__cta">
       <a href="#contact" class="btn btn--dark">カスタム勉強会企画のご相談</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RED DIVIDER ===== -->
+<div class="red-block"></div>
+
+<!-- ===== DEV LOG ===== -->
+<section class="dev-log snap-section" id="dev-log">
+  <div class="container">
+    <div class="dev-log__layout">
+      <div>
+        <p class="section-label">Dev Log</p>
+        <h2 class="section-title">開発ブログ</h2>
+        <hr class="red-rule">
+        <p class="dev-log__lead">AIを使った開発、キャラクター作り、ゲームづくりの試行錯誤を、プロダクトの裏側として記録します。技術だけでなく、なぜ作るのか、どこで悩んだのかまで読める開発日誌です。</p>
+        <a href="blog/" class="btn btn--dark">開発ブログを見る</a>
+      </div>
+      <div class="dev-log__list">
+        <a class="dev-log__item" href="blog/punching-arranger/">
+          <div class="dev-log__item-label">Series</div>
+          <div>
+            <div class="dev-log__item-title">Punching Arranger 開発日誌</div>
+            <div class="dev-log__item-meta">好きな曲で身体を動かすゲームを、AIと一緒に作っていく記録。</div>
+          </div>
+          <div class="dev-log__item-arrow">&rarr;</div>
+        </a>
+        <a class="dev-log__item" href="blog/punching-arranger/001-aichan-does-not-know-punch.html">
+          <div class="dev-log__item-label">Latest</div>
+          <div>
+            <div class="dev-log__item-title">第1回 あいちゃんはまだパンチを知らない</div>
+            <div class="dev-log__item-meta">PCカメラでパンチを検出する難しさと、あいちゃんがゲームの輪郭を見つけていく話。</div>
+          </div>
+          <div class="dev-log__item-arrow">&rarr;</div>
+        </a>
+      </div>
     </div>
   </div>
 </section>
