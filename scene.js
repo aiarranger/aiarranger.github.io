@@ -1,153 +1,281 @@
-// 3場面のWebGL合成。ワークショップの scene-recipe（キー合成・頂点変形・ワイプ）を海中の生成レイヤーへ読み替えたもの。
-// 環境レイヤー（背景・海藻・魚・生き物）は限定色（palette の暗→中→明）に写し、キャラクターだけ本来の色で泡の中に置く。
-// 座標は左上原点、x/yは描く画像の中心。W/HはCSSピクセル。
-import { config, clamp, smooth } from './config.js';
+// 切り紙の海（Canvas 2D）。仕様は generation/redesign-spec.md §4。
+// 色は config.tokens の7色だけ。形は paper.js の手切りの部品と、ここで作る手切りの色紙の縁。
+// 座標は CSS ピクセル（左上原点）。q はスクロールの進行、t は秒。
+// 2人は冒頭映像の最後で泡に入って色づいたので、場面の上には泡の2人（映像の最終フレームから切り出した絵）だけを描く。
+import { config, clamp, smooth, ramp, lerp, easeOutBack, mod } from './config.js';
+const easeIn = (x) => { x = clamp(x); return x * x * x; };
+import { mulberry32, rr, tracePoly } from './paper.js';
 
-const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+const T = config.tokens, TAU = Math.PI * 2, DEG = Math.PI / 180;
 
 export class Scene {
-  constructor(canvas, images) {
-    this.canvas = canvas; this.images = images;
-    const gl = this.gl = canvas.getContext('webgl', { alpha: false, antialias: false, preserveDrawingBuffer: true });
-    if (!gl) throw Error('WebGLを利用できません。ブラウザの設定をご確認ください。');
-    const vertex = `precision mediump float;attribute vec2 uv;varying vec2 tex;uniform vec2 viewport,center,size;uniform float angle,time,kind;
-    void main(){tex=uv;vec2 p=uv-.5;
-    if(kind==1.){float k=smoothstep(.5,.95,uv.x);p.y+=sin(uv.x*9.-time*3.)*.05*k;p.x+=sin(uv.x*6.-time*3.)*.012*k;}
-    if(kind==2.){p.x+=sin(time*.9+uv.y*2.5)*.014*uv.y;p.y+=sin(time*.7+uv.x*2.)*.006;}
-    if(kind==3.){p.x+=sin(time*.85+uv.y*2.1+uv.x*3.)*.07*pow(1.-uv.y,1.5);}
-    if(kind==4.){p.y+=sin(time*1.6+uv.x*5.)*.035*abs(uv.x-.5)*2.;}
-    if(kind==5.){p.y+=sin(time*1.2+uv.x*4.)*.02*uv.y;p.x+=sin(time*.8+uv.y*3.)*.01;}
-    p*=size;p=mat2(cos(angle),sin(angle),-sin(angle),cos(angle))*p+center;
-    gl_Position=vec4(p.x/viewport.x*2.-1.,1.-p.y/viewport.y*2.,0.,1.);}`;
-    const fragment = `precision mediump float;varying vec2 tex;uniform sampler2D image;uniform vec2 viewport,pixels,focus;uniform vec3 pdark,pmid,plight;uniform float opacity,time,water,reveal,mask,keyed,tint;
-    void main(){vec2 uv=tex;if(water>0.){uv.x+=sin(tex.y*26.+time*.8)*.0025+sin(tex.y*12.-time*.6)*.002;uv.y+=sin(tex.x*20.+time*.7)*.0015;}
-    vec4 col=texture2D(image,uv);
-    if(keyed>0.){float d=distance(col.rgb,vec3(1.,0.,1.));col.a*=smoothstep(.2,.45,d);
-      float spill=max(0.,min(col.r,col.b)-col.g-.3);col.r-=spill;col.b-=spill;}
-    if(tint>0.){float l=dot(col.rgb,vec3(.299,.587,.114));vec3 lim=l<.5?mix(pdark,pmid,l*2.):mix(pmid,plight,(l-.5)*2.);col.rgb=mix(col.rgb,lim,tint);}
-    vec2 screen=vec2(gl_FragCoord.x/pixels.x,1.-gl_FragCoord.y/pixels.y);
-    if(mask==1.){float edge=1.-reveal*1.1+.05+sin(screen.x*10.+reveal*6.)*.035;col.a*=smoothstep(edge-.008,edge+.008,screen.y);}
-    if(mask==2.){vec2 delta=(screen-focus)*viewport/min(viewport.x,viewport.y);float radius=reveal*length(viewport/min(viewport.x,viewport.y))*1.15;col.a*=1.-smoothstep(radius-.012,radius+.012,length(delta));}
-    col.a*=opacity;gl_FragColor=col;}`;
-    const compile = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw Error(gl.getShaderInfoLog(s)); return s; };
-    const prog = this.program = gl.createProgram();
-    gl.attachShader(prog, compile(gl.VERTEX_SHADER, vertex)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fragment)); gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw Error(gl.getProgramInfoLog(prog));
-    gl.useProgram(prog);
-    this.u = {}; for (const n of ['viewport', 'center', 'size', 'angle', 'time', 'kind', 'image', 'opacity', 'water', 'reveal', 'mask', 'pixels', 'focus', 'keyed', 'tint', 'pdark', 'pmid', 'plight']) this.u[n] = gl.getUniformLocation(prog, n);
-    this.attr = gl.getAttribLocation(prog, 'uv'); this.meshes = {};
-    for (const [key, nx, ny] of [['plain', 1, 1], ['mesh', 48, 24]]) {
-      const v = [];
-      for (let y = 0; y < ny; y++) for (let x = 0; x < nx; x++) v.push(x / nx, y / ny, (x + 1) / nx, y / ny, x / nx, (y + 1) / ny, x / nx, (y + 1) / ny, (x + 1) / nx, y / ny, (x + 1) / nx, (y + 1) / ny);
-      const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(v), gl.STATIC_DRAW);
-      this.meshes[key] = { b, count: v.length / 2 };
-    }
-    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
-    this.tex = {};
-    for (const [name, { source, keyed }] of Object.entries(images)) {
-      const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
-      this.tex[name] = { t, w: source.naturalWidth || source.width, h: source.naturalHeight || source.height, keyed: keyed ? 1 : 0 };
-    }
-    this.t = 0; this.setPalette(config.palette); this.resize();
+  constructor(canvas, S) {
+    this.canvas = canvas; this.S = S; this.ctx = canvas.getContext('2d', { alpha: false }); this.t = 0;
+    this.resize();
   }
-  setPalette(name) {
-    const p = config.palettes[name] || config.palettes[config.palette]; this.paletteName = config.palettes[name] ? name : config.palette; this.palette = p;
-    const gl = this.gl; gl.uniform3fv(this.u.pdark, hex(p.dark)); gl.uniform3fv(this.u.pmid, hex(p.mid)); gl.uniform3fv(this.u.plight, hex(p.light));
-    this.clear = hex(p.dark);
-  }
-  resize(w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio, config.dpr)) {
+  resize(w = innerWidth, h = innerHeight, dpr, mobile) {
+    this.mobile = mobile ?? (w < 750 || h >= w); // app.js の配置判定（幅749以下か縦長）と同じ
+    this.dpr = dpr ?? Math.min(devicePixelRatio || 1, this.mobile ? config.dprMobile : config.dpr);
     this.W = w; this.H = h;
-    this.canvas.width = Math.round(w * dpr); this.canvas.height = Math.round(h * dpr);
-    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+    this.canvas.width = Math.round(w * this.dpr); this.canvas.height = Math.round(h * this.dpr);
+    this.build();
   }
-  // w を指定し、高さは画像の縦横比から決める（h指定時はそのまま）。w が負なら左右反転。tint=1 で限定色に写す。
-  draw1(name, x, y, w, { h, opacity = 1, kind = 0, angle = 0, water = 0, mask = 0, reveal = 1, focus = [.5, .5], tint = 1 } = {}) {
-    const a = this.tex[name]; if (!a || opacity <= 0) return;
-    const gl = this.gl, u = this.u, m = this.meshes[kind ? 'mesh' : 'plain'];
-    gl.bindBuffer(gl.ARRAY_BUFFER, m.b); gl.enableVertexAttribArray(this.attr); gl.vertexAttribPointer(this.attr, 2, gl.FLOAT, false, 0, 0);
-    gl.bindTexture(gl.TEXTURE_2D, a.t); gl.uniform1i(u.image, 0);
-    gl.uniform2f(u.viewport, this.W, this.H); gl.uniform2f(u.pixels, this.canvas.width, this.canvas.height);
-    gl.uniform2f(u.center, x, y); gl.uniform2f(u.size, w, h ?? Math.abs(w) * a.h / a.w); gl.uniform2f(u.focus, focus[0], focus[1]);
-    for (const [k, v] of Object.entries({ opacity, kind, angle, water, mask, reveal, keyed: a.keyed, tint, time: this.t })) gl.uniform1f(u[k], v);
-    gl.drawArrays(gl.TRIANGLES, 0, m.count);
+
+  // ── 画面の大きさに合わせて、手切りの縁・部品の配置をシード固定で作る ──
+  build() {
+    const W = this.W, H = this.H, m = this.mobile, rnd = mulberry32(config.seed + 11), vw = W / 100, vh = H / 100, vmin = Math.min(W, H) / 100;
+    const waves = [0, 1, 2, 3].map(() => [rr(rnd, 2, 7), rr(rnd, 0, 7), rr(rnd, .4, 1)]);
+    const noise = (u) => waves.reduce((s, [f, p, a]) => s + Math.sin(u * f + p) * a, 0) / 2.2;
+    // 手切りの縁：base(x) ＋ ゆるい波 ＋ 6〜14px ごとの細かい角
+    const edge = (base, amp = .012) => { const o = []; for (let x = -40; x < W + 40; x += rr(rnd, 6, 14)) o.push([x, base(x) + amp * H * noise(x / W * 6) + .004 * H * (rnd() * 2 - 1)]); return o; };
+    const below = (pts) => [...pts, [W + 40, H * 1.8], [-40, H * 1.8]];
+    const above = (pts) => [...pts, [W + 40, -H * .8], [-40, -H * .8]];
+    this.g = {
+      s1Surface: above(edge((x) => .05 * H, .006)),
+      s1Sheet: below(edge((x) => .72 * H + .03 * H * Math.sin(x / W * 2.3 * Math.PI + .4))),
+      s1Hill: (() => { const o = []; for (let x = .20 * W; x < W + 40; x += rr(rnd, 6, 14)) { const g = x < .38 * W ? 0 : Math.sin(Math.PI * Math.min(1, (x - .38 * W) / (.62 * W) * 1.15)) ** .7, sh = .75 * (1 - Math.min(1, (x - .20 * W) / (.30 * W))) ** 2; o.push([x, H * (1.02 - .17 * g + sh) + .004 * H * (rnd() * 2 - 1)]); } return [...o, [W + 40, H * 1.8], [.20 * W, H * 1.8]]; })(),
+      s2Top: above(edge((x) => .28 * H + .02 * H * Math.sin(x / W * 3.1 + 1))),
+      s2Bottom: below(edge((x) => .80 * H + .02 * H * Math.sin(x / W * 2.4 + 2))),
+      s3Circle: (() => { const o = [], cx = .15 * W, cy = 1.10 * H, r = .70 * H; for (let a = 0; a < TAU; a += rr(rnd, 6, 14) / r) o.push([cx + Math.cos(a) * (r + .01 * H * noise(a * 3)), cy + Math.sin(a) * (r + .01 * H * noise(a * 3))]); return o; })(),
+      bands: [[.08, .06, .62], [.20, .10, .72], [.34, .04, .55], [.46, .08, .66]].map(([x0, w, yb], i) => {
+        const dx = Math.tan(24 * DEG), top = x0 * W, wd = w * W, ybR = yb * H, ybL = (yb - .07) * H;
+        const pts = []; const side = (x1, y1, x2, y2) => { const n = Math.max(2, Math.round(Math.hypot(x2 - x1, y2 - y1) / rr(rnd, 8, 16))); for (let k = 0; k < n; k++) { const u = k / n; pts.push([x1 + (x2 - x1) * u + rr(rnd, -1.2, 1.2), y1 + (y2 - y1) * u]); } };
+        side(top, -20, top + wd, -20); side(top + wd, -20, top + wd + ybR * dx, ybR); side(top + wd + ybR * dx, ybR, top + ybL * dx, ybL); side(top + ybL * dx, ybL, top, -20);
+        return { pts, cx: top + wd / 2, phase: i * 1.7 };
+      }),
+      leafOffsets: Array.from({ length: 72 }, () => rr(rnd, -1, 1)),
+      ringNoise: Array.from({ length: 64 }, () => rr(rnd, -1, 1))
+    };
+    const fishKinds = () => Math.floor(rnd() * 4);
+    this.s1Fish = Array.from({ length: m ? 7 : 11 }, () => ({ k: fishKinds(), x: rr(rnd, -10 * vw, W + 10 * vw), y: rr(rnd, .18, .34) * H, len: rr(rnd, 3.4, 6.2) * vw * (m ? 1.6 : 1), sp: 3 * vw * rr(rnd, .8, 1.25), ph: rnd() * 7 }));
+    this.s1Rings = Array.from({ length: 6 }, (_, i) => ({ k: i % 4, x: rr(rnd, .5, .98) * W, y: rnd() * H, d: rr(rnd, 6, 14), sp: rr(rnd, 20, 40), ph: rnd() * 7 }));
+    const NB = m ? 40 : 64; this.ball = Array.from({ length: NB }, (_, i) => ({ k: fishKinds(), lat: rr(rnd, -1.15, 1.15), lon: rnd() * TAU, sp: .35 * rr(rnd, .85, 1.2), len: rr(rnd, 2.2, 4.4) * vw * (m ? 1.6 : 1), s: i / NB - .5 + rr(rnd, -.02, .02), d: rr(rnd, -.5, .5), ph: rnd() * 7 }));
+    this.cols = (m ? [.78, .92] : [.80, .88, .94]).flatMap((x) => Array.from({ length: 5 }, () => ({ k: Math.floor(rnd() * 6), x: x * W, y: rnd() * H * 1.2, d: rr(rnd, 12, 56) * (m ? .8 : 1), sp: rr(rnd, 40, 90), ph: rnd() * 7 })));
+    this.stars = Array.from({ length: m ? 18 : 30 }, () => ({ k: Math.floor(rnd() * 6), x: rnd() * W, y: rr(rnd, .04, .86) * H, d: rr(rnd, 6, 28), ph: rnd() * 7 }));
+    this.snow = Array.from({ length: m ? 24 : 40 }, () => ({ x: rnd() * W, y: rnd() * H, ph: rnd() * 7 }));
+    const NS = m ? 12 : 18; this.spiral = Array.from({ length: NS }, (_, i) => ({ k: fishKinds(), a: i / NS * TAU + rr(rnd, -.1, .1), rj: rr(rnd, .85, 1.15), len: rr(rnd, 1.6, 2.6) * vw * (m ? 1.6 : 1) }));
+    this.ctaRings = Array.from({ length: 8 }, (_, i) => ({ k: i % 4, x: rr(rnd, .45, .98) * W, y: rnd() * H, d: rr(rnd, 8, 20), sp: rr(rnd, 18, 36), ph: rnd() * 7 }));
+    this.pearl = m ? [.5 * W, .24 * H] : [.62 * W, .30 * H]; this.pearlR = 7 * vh;
   }
-  cover(name, z) { const a = this.tex[name]; const s = Math.max(this.W / a.w, this.H / a.h) * z; return [a.w * s, a.h * s]; }
-  byHeight(name, h) { const a = this.tex[name]; return h * a.w / a.h; }
-  // 泡の中のキャラクター（本来の色）。h はキャラクターの高さ、泡は少し大きい円。
-  bubbleChar(name, x, y, h, { angle = 0, opacity = 1, wobble = 0, ...o } = {}) {
-    const a = this.tex[name], w = h * a.w / a.h, d = Math.hypot(w, h) * 1.02, t = this.t;
-    this.draw1('bubbleBack', x, y, d, { ...o, opacity: opacity * .9, tint: 0, angle: wobble });
-    this.draw1(name, x + Math.sin(t * .9 + wobble) * d * .01, y + Math.sin(t * .7) * d * .012, w, { ...o, kind: 2, angle, opacity, tint: 0 });
-    this.draw1('bubbleFront', x, y, d, { ...o, opacity: opacity * .95, tint: 0, angle: wobble + Math.sin(t * .3) * .08 });
+
+  // ── 描画の部品 ──
+  poly(pts, color, alpha = 1) { const c = this.ctx; c.globalAlpha = alpha; c.fillStyle = color; c.beginPath(); tracePoly(c, pts); c.fill(); c.globalAlpha = 1; }
+  img(im, x, y, w, h, { rot = 0, alpha = 1, flip = false } = {}) {
+    const c = this.ctx; c.save(); c.globalAlpha = alpha; c.translate(x, y); if (rot) c.rotate(rot); if (flip) c.scale(-1, 1); c.drawImage(im, -w / 2, -h / 2, w, h); c.restore();
   }
-  // 現在のパレットで場面1の初期構図を w×h に描いて PNG Blob を返す（映像の終景に使う）
-  async snapshot(w = 1920, h = 1080) {
-    const keep = [this.W, this.H, this.canvas.width, this.canvas.height];
-    this.W = w; this.H = h; this.canvas.width = w; this.canvas.height = h; this.gl.viewport(0, 0, w, h);
-    this.draw(0, 0);
+  // 根元（下端中央）を固定して、せん断で揺らす
+  weed(im, x, baseY, h, sway) {
+    const c = this.ctx, w = h * im.width / im.height; c.save(); c.translate(x, baseY); c.transform(1, 0, sway, 1, 0, 0); c.drawImage(im, -w / 2, -h, w, h); c.restore();
+  }
+  // 魚：heading（進む向き、ラジアン）に向けて描く。尾だけ振る
+  fish(f, x, y, len, heading, wag, alpha = 1) {
+    const c = this.ctx, s = len / f.L, right = Math.cos(heading) > 0;
+    c.save(); c.globalAlpha = alpha; c.translate(x, y); c.rotate(right ? heading : heading - Math.PI); if (right) c.scale(-1, 1); c.scale(s, s); c.translate(-f.L / 2, 0);
+    c.save(); c.translate(f.bodyL, 0); c.rotate(wag); c.drawImage(f.tail, -f.pad, -f.tail.height / 2); c.restore();
+    c.drawImage(f.body, -f.pad, -f.body.height / 2); c.restore();
+  }
+  bands(alpha, t, only) {
+    this.g.bands.forEach((b, i) => {
+      if (only != null && i !== only) return;
+      const c = this.ctx; c.save(); c.translate(b.cx, -20); c.rotate(Math.sin(t * .5 + b.phase) * DEG); c.translate(-b.cx, 20); this.poly(b.pts, T.sky, alpha); c.restore();
+    });
+  }
+  sheet(pts, color, dy = 0) { const c = this.ctx; c.save(); c.translate(0, dy); this.poly(pts, color); c.restore(); }
+  rising(list, sprites, t, W, H, speedK = 1) {
+    for (const r of list) { const y = mod(r.y - r.sp * speedK * t, H + 80) - 40; this.img(sprites[r.k % sprites.length], r.x + Math.sin(t * 1.3 + r.ph) * 4, y, r.d, r.d); }
+  }
+
+  // ── 場面 ──
+  s1(q, t) {
+    const W = this.W, H = this.H, c = this.ctx, S = this.S, m = this.mobile, l = clamp(q), par = (d) => -d * .35 * H * l;
+    c.fillStyle = T.cobalt; c.fillRect(0, 0, W, H);
+    this.bands(.28, t);
+    this.sheet(this.g.s1Surface, T.sky, par(.15));
+    this.sheet(this.g.s1Sheet, T.ultra, par(.15));
+    [[.05, .58], [.16, .46], [.34, .38], [.47, .52], [.62, .44], [.76, .60], [.93, .50]].forEach(([x, h], i) => this.weed(S.weedUltra[i % 3], x * W, H * 1.02 + par(.6), h * H, Math.sin(t * .85 + i * 1.7) * .03));
+    this.sheet(this.g.s1Hill, T.ink, par(1.1));
+    this.rising(this.s1Rings, S.ringS, t, W, H);
+    for (const f of this.s1Fish) { const x = mod(f.x - f.sp * t, W + 20 * W / 100) - 10 * W / 100; this.fish(S.fishIvory[f.k], x, f.y + par(1) + Math.sin(t * 1.1 + f.ph) * 3, f.len, Math.PI, Math.sin(t * 4 * Math.PI + f.ph) * 12 * DEG); }
+    [[.22, .56], [.36, .40], [.90, .48]].forEach(([x, h], i) => this.weed(S.weedSky[i % 2], x * W, H * 1.02 + par(1.35), h * H, Math.sin(t * .9 + i * 2.3) * .05));
+    this.weed(S.weedInk[0], -.02 * W, H * 1.04 + par(1.35), .55 * H, Math.sin(t * .8) * .04 + .08);
+    this.weed(S.weedInk[1], 1.02 * W, H * 1.04 + par(1.35), .55 * H, Math.sin(t * .8 + 1) * .04 - .08);
+  }
+
+  s2(q, t) {
+    const W = this.W, H = this.H, c = this.ctx, S = this.S, m = this.mobile, l = clamp(q - 1), par = (d) => -d * .35 * H * l, vmin = Math.min(W, H) / 100;
+    c.fillStyle = T.ultra; c.fillRect(0, 0, W, H);
+    this.bands(.14, t, 1);
+    this.sheet(this.g.s2Top, T.cobalt, par(.15));
+    this.sheet(this.g.s2Bottom, T.ink, par(.15));
+    this.rising(this.cols, S.ringA, t, W, H * 1.2);
+    // 群れ（ベイトボール）→ 斜めの帯にほどけて左へ抜ける
+    const [cx, cy] = m ? [.5 * W, .42 * H] : [.62 * W, .50 * H], u = smooth(ramp(q, 1.50, 1.80)), exit = smooth(ramp(q, 1.80, 1.95));
+    const R = 24 * vmin * (1 + .06 * Math.sin(t * TAU / 4)) * lerp(1, 1.25, u), dir = [Math.cos(-30 * DEG), Math.sin(-30 * DEG)], perp = [-dir[1], dir[0]];
+    const bc = [.5 * W, .62 * H], list = [];
+    for (const f of this.ball) {
+      const lon = f.lon + f.sp * t, X = R * Math.cos(f.lat) * Math.sin(lon), Y = R * Math.sin(f.lat) * .85, Z = Math.cos(f.lat) * Math.cos(lon);
+      const bx = cx + X, by = cy + Y + X * .18, vx = Math.cos(lon), bh = Math.atan2(vx * .18, vx);
+      const s = mod(f.s + .5 - .018 * t, 1) - .5, tx = bc[0] + s * 1.4 * W * dir[0] + f.d * .16 * H * perp[0] - exit * 1.7 * W, ty = bc[1] + s * 1.4 * W * dir[1] + f.d * .16 * H * perp[1];
+      list.push({ f, z: lerp(Z, 0, u), x: lerp(bx, tx, u), y: lerp(by, ty, u) + par(1), sc: lerp(lerp(.7, 1.15, (Z + 1) / 2), 1, u), h: u > .5 ? Math.atan2(-dir[1], -dir[0]) : bh, sky: Z < -.55 && u < .5 });
+    }
+    list.sort((a, b) => a.z - b.z);
+    for (const o of list) this.fish((o.sky ? S.fishSky : S.fishIvory)[o.f.k], o.x, o.y, o.f.len * o.sc, o.h, Math.sin(t * 4 * Math.PI + o.f.ph) * 12 * DEG);
+  }
+
+  s3(q, t) {
+    const W = this.W, H = this.H, c = this.ctx, S = this.S, m = this.mobile, l = clamp(q - 2), par = (d) => -d * .35 * H * l, vh = H / 100;
+    c.fillStyle = T.ink; c.fillRect(0, 0, W, H);
+    this.sheet(this.g.s3Circle, T.ultra, par(.15));
+    const tq = Math.floor(t * 8) / 8; // 星の瞬きだけコマ落とし
+    for (const s of this.stars) { const k = .85 + .15 * (Math.sin(tq * 3 + s.ph) * .5 + .5); this.img(S.stars[s.k], s.x, s.y + par(.6), s.d * k, s.d * k, { rot: Math.sin(tq * 2 + s.ph) * 8 * DEG }); }
+    c.fillStyle = T.ivory; for (const s of this.snow) c.fillRect(s.x + Math.sin(t * .7 + s.ph) * 3, mod(s.y + 8 * t, H), 2, 2);
+    this.weed(S.coral[0], .12 * W, H * 1.01 + par(1.35), .60 * H, Math.sin(t * .7) * .02);
+    this.weed(S.coral[1], .88 * W, H * 1.01 + par(1.35), .40 * H, Math.sin(t * .7 + 1.2) * .02);
+    // 真珠とまわりを回る小魚
+    const [px, py] = this.pearl, grow = easeOutBack(ramp(q, 2.40, 2.55)), rad = lerp(22, 14, ramp(q, 2.4, 3.0)) * vh;
+    if (grow > 0) {
+      for (const f of this.spiral) { const a = f.a - t * TAU / 12, r = rad * f.rj; this.fish(S.fishSky[f.k], px + Math.cos(a) * r, py + Math.sin(a) * r * .8, f.len, a - Math.PI / 2, Math.sin(t * 4 * Math.PI + f.a) * 12 * DEG, clamp(grow)); }
+      const d = this.pearlR * 2 * grow; this.img(S.pearl, px, py, d, d);
+    }
+  }
+
+  s5(q, t) {
+    const W = this.W, H = this.H, c = this.ctx, S = this.S;
+    c.fillStyle = T.cobalt; c.fillRect(0, 0, W, H);
+    this.bands(.28, t);
+    this.sheet(this.g.s1Surface, T.sky);
+    this.sheet(this.g.s1Sheet, T.ultra);
+    this.rising(this.ctaRings, S.ringS, t, W, H);
+    [[.04, .5], [.20, .36], [.55, .30], [.74, .44], [.96, .52]].forEach(([x, h], i) => this.weed(S.weedUltra[i % 3], x * W, H * 1.02, h * H, Math.sin(t * .85 + i * 1.7) * .03));
+    this.weed(S.weedSky[0], .06 * W, H * 1.02, .42 * H, Math.sin(t * .9) * .05 + .06);
+    this.weed(S.weedSky[1], .95 * W, H * 1.02, .34 * H, Math.sin(t * .9 + 1) * .05 - .05);
+    this.weed(S.weedInk[0], -.03 * W, H * 1.04, .50 * H, Math.sin(t * .8) * .04 + .08);
+    this.weed(S.weedInk[1], 1.03 * W, H * 1.04, .46 * H, Math.sin(t * .8 + 1) * .04 - .08);
+  }
+
+  // 転換A：墨紺の羽状の葉が、左上から右下へ画面を横切る。葉の軸が通り過ぎた側（左上）だけが次の場面（S2）になり、境目は軸の下に隠れる
+  leafGeom(p) {
+    const W = this.W, H = this.H, diag = Math.hypot(W, H), len = 1.6 * diag, ang = -32 * DEG, ax = [Math.cos(ang), Math.sin(ang)], nx = [-ax[1], ax[0]];
+    const d = lerp(-.95, .95, p) * diag, cx = W / 2 + nx[0] * d, cy = H / 2 + nx[1] * d;
+    return { len, ang, ax, nx, cx, cy, diag, map: ([u, v]) => [cx + (u * ax[0] - v * ax[1]) * len, cy + (u * ax[1] + v * ax[0]) * len] };
+  }
+  leafBehind(G) { // 軸より左上側の半平面
+    const c = this.ctx, F = G.diag * 2, { cx, cy, ax, nx } = G;
+    c.beginPath(); c.moveTo(cx - ax[0] * F, cy - ax[1] * F); c.lineTo(cx + ax[0] * F, cy + ax[1] * F); c.lineTo(cx + ax[0] * F - nx[0] * F, cy + ax[1] * F - nx[1] * F); c.lineTo(cx - ax[0] * F - nx[0] * F, cy - ax[1] * F - nx[1] * F); c.closePath();
+  }
+  leaf(G) {
+    const c = this.ctx; c.fillStyle = T.ink; c.beginPath();
+    for (const poly of this.S.leaf.polys) { poly.forEach((pt, i) => { const [x, y] = G.map(pt); i ? c.lineTo(x, y) : c.moveTo(x, y); }); c.closePath(); }
+    c.fill();
+    c.strokeStyle = T.sky; c.lineCap = 'round'; c.lineWidth = Math.max(2, G.len * .0024); c.beginPath();
+    for (const [a, b] of this.S.leaf.veins) { const A = G.map(a), B = G.map(b); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); }
+    c.stroke();
+  }
+
+  // 転換B：輪が膨らみ、その内側が次の場面になる
+  ringPath(cx, cy, r) { const c = this.ctx, n = this.g.ringNoise, N = n.length; c.beginPath(); for (let i = 0; i < N; i++) { const a = i / N * TAU, rr2 = r * (1 + .012 * n[i]); i ? c.lineTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2) : c.moveTo(cx + Math.cos(a) * rr2, cy + Math.sin(a) * rr2); } c.closePath(); }
+
+  // ── 泡の2人 ──
+  // CTA での位置：デスクトップは右側、モバイルは上端64pxから（低い画面は小さく上へ寄せて、下の札と重ねない）
+  ctaTarget(key) {
+    const W = this.W, H = this.H;
+    if (!this.mobile) return key === 'ai' ? [.70 * W, .50 * H, .19 * H] : [.87 * W, .27 * H, .12 * H];
+    const b = config.bubbles, r = (b[key][2] + b.pad) / 1080 * W, low = H < 640;
+    return key === 'ai' ? [W * (low ? .32 : .36), 64 + W * (low ? .24 : .40), r * (low ? .6 : .8)] : [W * .78, 64 + W * (low ? .10 : .17), r * (low ? .6 : .8)];
+  }
+  // q での位置と半径（config.path の区間を smooth でつなぎ、最後は CTA の位置へ）＋ゆるい浮き沈み
+  charAt(key, q, t) {
+    const W = this.W, H = this.H, m = this.mobile, unit = m ? W : H;
+    const keys = [...config.path[m ? 'mobile' : 'desktop'][key].map(([kq, x, y, r]) => [kq, x * W, y * H, r * unit]), [config.segments.open[1], ...this.ctaTarget(key)]];
+    let p = keys[keys.length - 1];
+    if (q <= keys[0][0]) p = keys[0];
+    else for (let i = 0; i < keys.length - 1; i++) { const a = keys[i], b = keys[i + 1]; if (q <= b[0]) { const u = smooth((q - a[0]) / (b[0] - a[0])); p = [q, lerp(a[1], b[1], u), lerp(a[2], b[2], u), lerp(a[3], b[3], u)]; break; } }
+    let [, x, y, r] = p;
+    // コピーの札に重ねない（app.js の safeArea）。札の出ている S1〜S3 では境目の外へ寄せ、真珠の窓が開く間に CTA の境目へ切り替える
+    const sf = this.safe, sg = config.segments, f = ramp(q, sg.open[0], sg.open[1]);
+    if (sf && !m) x = lerp(Math.max(x, sf.left + r), x, f);
+    if (sf && m) {
+      const lim = lerp(sf.bottom, sf.ctaBottom, f);
+      if (y + r > lim) { r = Math.max(Math.min(r, (lim - 72) / 2), r * .6); y = Math.max(72 + r, lim - r); }
+    }
+    return [x, y + Math.sin(t * TAU / 5 + (key === 'ai' ? 0 : 1.3)) * .008 * H, r];
+  }
+  // 冒頭映像の最終フレームを、映像と同じ切り取り（geo）で置いたときの泡の位置
+  landAt(key, geo) { const b = config.bubbles, [bx, by, br] = b[key]; return [geo.ox + bx * geo.s, geo.oy + by * geo.s, (br + b.pad) * geo.s]; }
+  // land = null（着地済み）か { c: 外側が閉じる進み, m: 泡が移る進み, geo }
+  chars(q, t, land) {
+    const c = this.ctx, W = this.W, H = this.H;
+    if (land && land.c < 1) { // 最終フレームのまま、泡の外側だけが閉じていく
+      const R = lerp(Math.hypot(W, H) * 1.2, 0, smooth(land.c)), g = land.geo;
+      c.save(); c.beginPath();
+      for (const key of ['ai', 'kiyo']) { const [x, y, r] = this.landAt(key, g); c.moveTo(x + Math.max(r, R), y); c.arc(x, y, Math.max(r, R), 0, TAU); }
+      c.clip(); c.drawImage(this.S.last, g.ox, g.oy, 1920 * g.s, 1080 * g.s); c.restore();
+      return;
+    }
+    // 泡の中の動きは着地が終わってから最初のコマで始める（それまでは最終フレームと同じ最初のコマ）。揺れも着地に合わせて強める
+    if (land) this.animT0 = t;
+    const at = land ? null : t - (this.animT0 ?? 0), amp = land ? smooth(land.m) : 1, wb = config.wobble; // 着地中は静止画（大きく映るので鮮明な方）
+    for (const key of ['kiyo', 'ai']) {
+      let [x, y, r] = this.charAt(key, q, t);
+      if (land) { const [lx, ly, lr] = this.landAt(key, land.geo), u = smooth(land.m); x = lerp(lx, x, u); y = lerp(ly, y, u); r = lerp(lr, r, u); }
+      const ph = key === 'ai' ? 0 : 2.1, sq = amp * wb.squash * Math.sin(t * TAU / wb.squashSec + ph);
+      c.save(); c.translate(x, y); c.rotate(amp * wb.tilt * DEG * Math.sin(t * TAU / wb.tiltSec + ph)); c.scale(1 + sq, 1 - sq);
+      this.bubbleFrame(key, r, at);
+      c.restore();
+    }
+  }
+  // 泡の中身を原点中心・半径 r で描く。ループの連番画像があればその時刻のコマ、なければ（または at が null なら）最終フレームの静止画
+  bubbleFrame(key, r, at) {
+    const c = this.ctx, im = this.S.loop?.[key], L = config.loops[key];
+    if (!im || at == null) { c.drawImage(this.S.bubble[key], -r, -r, r * 2, r * 2); return; }
+    this.loopStart ??= {}; this.loopStart[key] ??= this.t; // 連番画像を初めて描いた時刻（遅れて届いた場合もそこから切り替える）
+    const f = Math.floor(Math.max(0, at) * L.fps) % L.frames, S = L.size, k = r / (S * config.loops.ratio);
+    c.save(); c.beginPath(); c.arc(0, 0, r, 0, TAU); c.clip();
+    c.drawImage(im, (f % L.cols) * S, Math.floor(f / L.cols) * S, S, S, -S / 2 * k, -S / 2 * k, S * k, S * k);
+    c.restore();
+    // 着地の直後（または連番画像が届いた直後）は、静止画から動く絵へ 0.35 秒で重ねて切り替える（細部の描き方の違いでちらつかないように）
+    const age = Math.min(at, this.t - this.loopStart[key]);
+    if (age < .35) { c.globalAlpha = clamp(1 - age / .35); c.drawImage(this.S.bubble[key], -r, -r, r * 2, r * 2); c.globalAlpha = 1; }
+  }
+
+  draw(q, t, land = null) {
+    this.t = t; const c = this.ctx, sg = config.segments, W = this.W, H = this.H;
+    c.setTransform(this.dpr, 0, 0, this.dpr, 0, 0); c.globalAlpha = 1;
+    let front = null; // 泡より手前に描くもの（葉、輪の縁、真珠の窓の縁）
+    if (q < sg.leafA[0]) this.s1(q, t);
+    else if (q < sg.leafA[1]) {
+      this.s1(q, t);
+      const G = this.leafGeom(ramp(q, sg.leafA[0], sg.leafA[1]));
+      c.save(); this.leafBehind(G); c.clip(); this.s2(q, t); c.restore(); c.globalAlpha = 1;
+      front = () => this.leaf(G);
+    }
+    else if (q < sg.ringB[0]) this.s2(q, t);
+    else if (q < sg.ringB[1]) {
+      this.s2(q, t);
+      const p = ramp(q, sg.ringB[0], sg.ringB[1]), r = Math.pow(p, 1.4) * Math.hypot(W, H) * 1.1 + 20, [cx, cy] = [.72 * W, .40 * H];
+      c.save(); this.ringPath(cx, cy, r); c.clip(); this.s3(q, t); c.restore();
+      front = () => { c.save(); this.ringPath(cx, cy, r); c.lineWidth = 8; c.strokeStyle = T.ivory; c.stroke(); c.restore(); };
+    }
+    else if (q < sg.open[0]) this.s3(q, t);
+    else if (q < sg.open[1]) { // 転換C：真珠が窓になって広がり、中が明るい CTA の海になる
+      this.s3(q, t);
+      const [px, py] = this.pearl, r = lerp(this.pearlR, Math.hypot(W, H) * 1.05, easeIn(ramp(q, sg.open[0], sg.open[1])));
+      c.save(); this.ringPath(px, py, r); c.clip(); this.s5(q, t); c.restore();
+      front = () => { c.save(); this.ringPath(px, py, r); c.lineWidth = 8; c.strokeStyle = T.ivory; c.stroke(); c.restore(); };
+    }
+    else this.s5(q, t);
+    this.chars(q, t, land);
+    front?.();
+  }
+
+  // 指定の q・t で w×h に描いて PNG を返す（OGP 画像などに使う。着地済みの状態）
+  async snapshot(w = 1920, h = 1080, { q = 0, t = 0 } = {}) {
+    const keep = [this.W, this.H, this.dpr, this.mobile], safe = this.safe, a0 = this.animT0, ls = this.loopStart;
+    // 札の境目は画面の実寸のもの、泡の中のコマは画面での経過時間によるので、書き出しでは q と t だけで決める
+    this.safe = null; this.animT0 = 0; this.loopStart = { ai: -1e9, kiyo: -1e9 };
+    this.resize(w, h, 1); this.draw(q, t);
     const blob = await new Promise((res) => this.canvas.toBlob(res, 'image/png'));
-    this.W = keep[0]; this.H = keep[1]; this.canvas.width = keep[2]; this.canvas.height = keep[3]; this.gl.viewport(0, 0, keep[2], keep[3]);
+    this.resize(keep[0], keep[1], keep[2], keep[3]); this.safe = safe; this.animT0 = a0; this.loopStart = ls;
     return blob;
-  }
-
-  draw(q, t) {
-    const W = this.W, H = this.H, mobile = W < 750, gl = this.gl; this.t = t;
-    gl.clearColor(this.clear[0], this.clear[1], this.clear[2], 1); gl.clear(gl.COLOR_BUFFER_BIT);
-    const aichanH = H * (mobile ? .24 : .32), kiyoH = H * (mobile ? .17 : .23); // 泡の中のちびあいちゃん・きよごん
-    // 手前の海藻は画面の下側だけを占めるよう高さで決め、左右2枚（片方は反転）で幅を埋める
-    const kelpH = H * (mobile ? .6 : .62), kelpW = kelpH * this.tex.kelp.w / this.tex.kelp.h;
-
-    // ── 場面1：浅瀬。映像の終景と同じ構図から始まる（q 0〜1.1） ──
-    if (q < 1.1) {
-      const h = clamp(q / .72), l = smooth((q - .65) / .45);
-      const [bw, bh] = this.cover('shallow', 1.06 + .08 * h + .2 * l);
-      this.draw1('shallow', W * .5 + Math.sin(t * .14) * .01 * W, H * (.5 - .03 * h + .06 * l), bw, { h: bh });
-      this.draw1('fish', W * (.72 - .12 * h + Math.sin(t * .11) * .03), H * (.22 + Math.sin(t * .5) * .01), W * (mobile ? .9 : .5), { kind: 5, opacity: .85 });
-      this.draw1('fish', W * (.2 + .1 * h + Math.sin(t * .09 + 2) * .03), H * (.72 + Math.sin(t * .4) * .01), -W * (mobile ? .55 : .3), { kind: 5, opacity: .5 });
-      this.draw1('kelp', W * .35 + Math.sin(t * .2) * .01 * W, H - kelpH * .38 + H * (.1 + .3 * l), kelpW * .8, { kind: 3, opacity: .4 });
-      this.draw1('kelp', W * .8 + Math.sin(t * .17) * .01 * W, H - kelpH * .3 + H * (.1 + .3 * l), -kelpW * .7, { kind: 3, opacity: .35 });
-      // 2人：泡の中で本来の色。あいちゃんは中央やや右、きよごんは右上
-      this.bubbleChar('aichan', W * (mobile ? .5 : .6) + Math.sin(t * .4) * .01 * W - .05 * W * l, H * (mobile ? .48 : .48) + Math.sin(t * .6) * .015 * H + .1 * H * l, aichanH, { angle: -.12 + Math.sin(t * .6) * .03, wobble: .2 });
-      this.bubbleChar('kiyogon', W * (mobile ? .8 : .84) + Math.sin(t * .35 + 1) * .01 * W + .05 * W * l, H * (mobile ? .24 : .26) + Math.sin(t * .8 + 2) * .02 * H - .1 * H * l, kiyoH, { angle: -.08 + Math.sin(t * .5) * .04, wobble: -.3 });
-      this.draw1('kelp', W * .22 + Math.sin(t * .15 + 1) * .01 * W, H - kelpH * .5 + H * (.16 + .55 * l), kelpW, { kind: 3, opacity: .98 });
-      this.draw1('kelp', W * .88 + Math.sin(t * .13 + 2) * .01 * W, H - kelpH * .5 + H * (.22 + .55 * l), -kelpW * .9, { kind: 3, opacity: .95 });
-    }
-
-    // ── 場面2：中層。下から波の境界で現れ、マンタが横切り、クラゲが昇る（q .7〜2.1） ──
-    if (q > .7 && q < 2.1) {
-      const phase = q - 1, h = clamp(phase / .72), cross = smooth((phase + .1) / 1.0), l = smooth((phase - .3) / .5);
-      const o = q < 1.1 ? { mask: 1, reveal: clamp((q - .7) / .4) } : {};
-      const [bw, bh] = this.cover('mid', 1.06 + .12 * h);
-      this.draw1('mid', W * (.5 - .03 * h), H * (.5 + .05 * h), bw, { ...o, h: bh, water: 1 });
-      this.draw1('fish', W * (.9 - .5 * h), H * .18, W * (mobile ? .6 : .32), { ...o, kind: 5, opacity: .55 });
-      const jellyW = this.byHeight('jelly', H * (mobile ? .42 : .6));
-      this.draw1('jelly', W * (mobile ? .72 : .78) + Math.sin(t * .3) * .015 * W, H * (1.1 - .7 * h) + Math.sin(t * .6) * .02 * H, jellyW, { ...o, kind: 2, opacity: .96 });
-      // 2人は小さく奥へ（泡のまま）
-      this.bubbleChar('aichan', W * (mobile ? .68 : .64) + Math.sin(t * .3) * .01 * W, H * (.26 + .05 * h) + Math.sin(t * .5) * .01 * H, aichanH * .7, { ...o, angle: -.1, wobble: .2, opacity: .95 });
-      this.bubbleChar('kiyogon', W * (mobile ? .86 : .8) + Math.sin(t * .25 + 1) * .01 * W, H * (.16 + .04 * h) + Math.sin(t * .6) * .01 * H, kiyoH * .7, { ...o, angle: -.06, wobble: -.3, opacity: .95 });
-      const mantaW = W * (mobile ? 1.5 : .92);
-      this.draw1('manta', W * (-.55 + 1.9 * cross), H * (.62 - .2 * cross) + Math.sin(t * .8) * .02 * H, mantaW, { ...o, kind: 4, angle: -.08 + .1 * cross });
-      if (l > 0) this.draw1('manta', W * (1.4 - 1.2 * l), H * (.3 + .1 * l), -mantaW * .45, { ...o, kind: 4, opacity: .7, angle: .06 });
-    }
-
-    // ── 場面3：深海。中央の泡から広がって現れ、チョウチンアンコウの灯りの後、2人が光へ上昇（q 1.7〜3.4） ──
-    if (q > 1.7) {
-      const phase = q - 2, h = clamp(phase / .72), rise = smooth((phase - .4) / .75), come = smooth(h / .6);
-      const o = q < 2.1 ? { mask: 2, reveal: clamp((q - 1.7) / .4), focus: [.5, .62] } : {};
-      const [bw, bh] = this.cover('deep', 1.1 + .08 * h + .5 * rise);
-      this.draw1('deep', W * .5, H * (.5 + .03 * h) + (bh - H) * .5 * rise, bw, { ...o, h: bh });
-      this.draw1('glow', W * (.3 + Math.sin(t * .12) * .03), H * (.55 - .05 * h + .3 * rise), W * (mobile ? .7 : .4), { ...o, kind: 2, opacity: .8 });
-      this.draw1('glow', W * (.72 + Math.sin(t * .1 + 1) * .03), H * (.3 + .2 * rise), -W * (mobile ? .5 : .3), { ...o, kind: 2, opacity: .5 });
-      this.draw1('glow', W * (.5 + Math.sin(t * .08 + 2) * .03), H * (.85 + .4 * rise), W * (mobile ? .6 : .34), { ...o, kind: 2, opacity: .35 });
-      const anglerW = W * (mobile ? .62 : .36);
-      this.draw1('anglerfish', W * (1.25 - .65 * come) + Math.sin(t * .35) * .01 * W, H * (.56 + Math.sin(t * .7) * .02 + .9 * rise), anglerW, { ...o, kind: 1, angle: -.04 + Math.sin(t * .5) * .03 });
-      if (rise > 0) {
-        this.bubbleChar('aichan', W * (mobile ? .55 : .66) + Math.sin(t * .5) * .01 * W, H * (1.45 - (mobile ? .9 : 1.0) * rise) + Math.sin(t * .9) * .02 * H, aichanH * 1.1, { ...o, angle: .25 + Math.sin(t * .6) * .025, wobble: .2 });
-        this.bubbleChar('kiyogon', W * (mobile ? .82 : .85) + Math.sin(t * .4) * .01 * W, H * (1.7 - (mobile ? .95 : 1.15) * rise) + Math.sin(t * .8 + 2) * .025 * H, kiyoH * 1.1, { ...o, angle: -.1 + Math.sin(t * .5) * .03, wobble: -.3 });
-      }
-    }
   }
 }

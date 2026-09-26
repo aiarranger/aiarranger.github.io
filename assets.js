@@ -1,68 +1,47 @@
-// 生成レイヤーの読み込み。マゼンタ背景（#FF00FF）の画像は keyed 印を付け、シェーダーで抜く。
-// 1枚に複数の生き物が入った画像は crops で切り出し、キャラクターは非マゼンタ領域に詰める。
+// 素材の読み込みと、切り紙の部品（画像）づくり。
+// 泡の2人は、冒頭映像の最終フレーム（config.media.last）から円く切り出す。大きいあいちゃんは映像の中だけに出す。
 import { config } from './config.js';
-
-const isKey = (r, g, b) => r > 170 && b > 170 && g < 110 && Math.abs(r - b) < 70;
+import { mulberry32, makeFish, makeWeed, makeRing, makeStar, makeDisc, makeCoral, giantLeafPts } from './paper.js';
 
 function loadImage(src) {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img); img.onerror = () => rej(Error(`${src} を読み込めません`)); img.src = src;
-  });
+  return new Promise((res, rej) => { const img = new Image(); img.onload = () => res(img); img.onerror = () => rej(Error(`${src} を読み込めません`)); img.src = src; });
 }
 
-function crop(source, x, y, w, h) {
-  const cv = document.createElement('canvas');
-  const sw = source.naturalWidth || source.width, sh = source.naturalHeight || source.height;
-  cv.width = Math.round(sw * w); cv.height = Math.round(sh * h);
-  cv.getContext('2d').drawImage(source, Math.round(sw * x), Math.round(sh * y), cv.width, cv.height, 0, 0, cv.width, cv.height);
-  return cv;
-}
-
-// 非マゼンタ画素の外接矩形（4px飛ばしで走査）に少し余白を足して切り出す
-function trim(cv) {
-  const ctx = cv.getContext('2d', { willReadFrequently: true });
-  const { width: w, height: h } = cv, d = ctx.getImageData(0, 0, w, h).data;
-  let x0 = w, y0 = h, x1 = 0, y1 = 0;
-  for (let y = 0; y < h; y += 3) for (let x = 0; x < w; x += 3) {
-    const i = (y * w + x) * 4;
-    if (!isKey(d[i], d[i + 1], d[i + 2])) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
-  }
-  if (x1 <= x0 || y1 <= y0) return cv;
-  const pad = 6;
-  x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w, x1 + pad); y1 = Math.min(h, y1 + pad);
-  return crop(cv, x0 / w, y0 / h, (x1 - x0) / w, (y1 - y0) / h);
-}
-
-// 泡：奥（薄い面と縁）と手前（ハイライト）の2枚をCanvas 2Dで描く。キャラクターを包む。
-function paintBubble(front) {
-  const cv = document.createElement('canvas'); cv.width = cv.height = 512; const ctx = cv.getContext('2d'); const c = 256, r = 236;
-  if (!front) {
-    const g = ctx.createRadialGradient(c, c, r * .2, c, c, r); g.addColorStop(0, 'rgba(255,255,255,.05)'); g.addColorStop(.85, 'rgba(255,255,255,.10)'); g.addColorStop(1, 'rgba(255,255,255,.28)');
-    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(c, c, r, 0, 7); ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(c, c, r - 3, 0, 7); ctx.stroke();
-  } else {
-    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(c, c, r - 3, 0, 7); ctx.stroke();
-    ctx.lineCap = 'round'; ctx.strokeStyle = 'rgba(255,255,255,.95)'; ctx.lineWidth = 16; ctx.beginPath(); ctx.arc(c, c, r - 26, Math.PI * 1.12, Math.PI * 1.42); ctx.stroke();
-    ctx.lineWidth = 8; ctx.beginPath(); ctx.arc(c, c, r - 26, Math.PI * 1.5, Math.PI * 1.6); ctx.stroke();
-    ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 10; ctx.beginPath(); ctx.arc(c, c, r - 24, Math.PI * .2, Math.PI * .42); ctx.stroke();
-  }
-  return cv;
+// 最終フレームの泡を円く切り出す（半径は実測＋余白。中心は画像の中心）
+function cutBubble(img, [bx, by, br], pad) {
+  const k = img.naturalWidth / 1920, R = (br + pad) * k, c = document.createElement('canvas'); c.width = c.height = Math.ceil(R * 2);
+  const ctx = c.getContext('2d'); ctx.beginPath(); ctx.arc(R, R, R, 0, Math.PI * 2); ctx.clip();
+  ctx.drawImage(img, R - bx * k, R - by * k, img.naturalWidth, img.naturalHeight); return c;
 }
 
 export async function loadAssets() {
-  const images = {};
-  await Promise.all(Object.entries(config.layers).map(async ([name, src]) => {
-    images[name] = { source: await loadImage(src), keyed: /key/.test(src) };
-  }));
-  for (const [name, [from, x, y, w, h]] of Object.entries(config.crops)) {
-    images[name] = { source: crop(images[from].source, x, y, w, h), keyed: images[from].keyed };
+  const T = config.tokens, last = await loadImage(config.media.last);
+  const rnd = mulberry32(config.seed);
+  const S = {
+    last, bubble: { ai: cutBubble(last, config.bubbles.ai, config.bubbles.pad), kiyo: cutBubble(last, config.bubbles.kiyo, config.bubbles.pad) },
+    loop: { ai: null, kiyo: null }, // ループの連番画像は loadLoops() が裏で入れる（届くまでは静止画の泡）
+    fishIvory: [0, 1, 2, 3].map((k) => makeFish(k, T.ivory, 170, rnd)),
+    fishSky: [0, 1, 2, 3].map((k) => makeFish(k, T.sky, 150, rnd)),
+    weedUltra: [0, 1, 2].map(() => makeWeed(T.ultra, 900, rnd)),
+    weedSky: [0, 1].map(() => makeWeed(T.sky, 760, rnd, { fronds: [1, 1], width: .065, sway: [.08, .14] })),
+    weedInk: [0, 1].map(() => makeWeed(T.ink, 980, rnd, { fronds: [2, 3], width: .1 })),
+    ringS: [0, 1, 2, 3].map(() => makeRing(T.ivory, 28, rnd, { thick: [.16, .24] })),
+    ringA: [0, 1, 2, 3, 4, 5].map(() => makeRing(T.ivory, 96, rnd)),
+    stars: [0, 1, 2, 3, 4, 5].map(() => makeStar(T.ivory, 48, rnd)),
+    pearl: makeDisc(T.ivory, 280, rnd),
+    coral: [makeCoral(T.cobalt, 900, rnd), makeCoral(T.cobalt, 700, rnd)],
+    leaf: giantLeafPts(rnd)
+  };
+  return S;
+}
+
+// 泡の中のループの連番画像を裏で読み込む。冒頭映像の読み込みを邪魔しないよう app.js が再生開始後に呼ぶ。
+// 初めて描くときに展開で止まらないよう、ImageBitmap にしてから渡す（読めなければ静止画の泡のまま）
+export function loadLoops(S) {
+  for (const key of ['ai', 'kiyo']) {
+    loadImage(config.loops[key].src)
+      .then((im) => (window.createImageBitmap ? createImageBitmap(im).catch(() => im) : im))
+      .then((bmp) => { S.loop[key] = bmp; })
+      .catch(() => {});
   }
-  for (const name of config.trim) if (images[name]?.keyed) {
-    const src = images[name].source;
-    images[name].source = trim(src.getContext ? src : crop(src, 0, 0, 1, 1));
-  }
-  images.bubbleBack = { source: paintBubble(false), keyed: false };
-  images.bubbleFront = { source: paintBubble(true), keyed: false };
-  return images;
 }
