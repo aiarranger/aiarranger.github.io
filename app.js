@@ -95,6 +95,7 @@ let lastKey = '';
 function render(force = false) {
   const land = landing(), q = state.q;
   if (state.ready && state.intro !== 'active' && stageVisible()) scene.draw(q, state.t, land);
+  if (!ask.shown && state.ready && state.intro === 'done' && !land) showAsk();
   const key = `${q.toFixed(4)}|${land ? land.m.toFixed(3) : 1}`;
   if (!force && key === lastKey) return; lastKey = key;
   copyOpacity(q, land).forEach((o, i) => { const el = copies[i]; el.style.opacity = clamp(o * 1.6); el.inert = o < .5; el.classList.toggle('show', o > .25); el.style.setProperty('--exit', (1 - o).toFixed(3)); });
@@ -160,6 +161,35 @@ function setPaused(v) {
 }
 pauseBtn.onclick = () => setPaused(!state.paused);
 setPaused(false);
+
+// ── AIに聞いてみる（右下）：訪問者が普段使っている ChatGPT・Claude を、質問を入れた状態で新しいタブで開く。このサイトからは何も送らない ──
+const ask = { root: $('#ask'), panel: $('#askPanel'), toggle: $('#askToggle'), free: $('#askFree'), links: [$('#askGpt'), $('#askClaude')], shown: false };
+$('#askPresets').innerHTML = config.ask.presets.map((q, i) => `<label class="ask-opt"><input type="radio" name="askq" value="${i}"${i ? '' : ' checked'}><span>${q}</span></label>`).join('');
+ask.free.maxLength = config.ask.maxLen;
+const askChoice = () => document.querySelector('input[name="askq"]:checked')?.value ?? '0';
+const askQuestion = () => (askChoice() === 'free' ? ask.free.value.trim().slice(0, config.ask.maxLen) : config.ask.presets[+askChoice()]);
+function askUpdate() {
+  ask.free.hidden = askChoice() !== 'free';
+  const q = askQuestion(), p = encodeURIComponent(config.ask.prompt(q, q !== config.ask.presets[0]));
+  // 自分で書くを選んで空のときは押せない。中クリックなどで開かれても空の質問が送られないよう、外部の URL も入れない
+  ask.links[0].href = q ? config.ask.chatgpt + p : '#askFree'; ask.links[1].href = q ? config.ask.claude + p : '#askFree';
+  ask.links.forEach((a) => a.setAttribute('aria-disabled', String(!q)));
+}
+function setAskOpen(open, restoreFocus = true) {
+  ask.panel.hidden = !open; ask.toggle.setAttribute('aria-expanded', String(open));
+  if (open) (document.querySelector('input[name="askq"]:checked') || ask.free).focus(); else if (restoreFocus) ask.toggle.focus();
+}
+function showAsk() { if (ask.shown) return; ask.shown = true; ask.root.hidden = false; } // 冒頭映像と着地が終わってから浮かび上がる
+ask.toggle.onclick = () => setAskOpen(ask.panel.hidden);
+$('#askClose').onclick = () => setAskOpen(false);
+ask.panel.addEventListener('change', askUpdate);
+// 「自分で書く」をクリック・タップしたときだけ入力欄へ移る（矢印キーでの選択や、入力欄から出るときには移らない）
+ask.panel.addEventListener('click', (e) => { if (e.detail > 0 && e.target.name === 'askq' && e.target.value === 'free') ask.free.focus(); });
+ask.free.addEventListener('input', askUpdate);
+ask.links.forEach((a) => a.addEventListener('click', (e) => { if (!askQuestion()) { e.preventDefault(); ask.free.focus(); } }));
+ask.panel.querySelector('.ask-note a').addEventListener('click', () => setAskOpen(false, false));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !e.isComposing && e.keyCode !== 229 && !ask.panel.hidden) setAskOpen(false); }); // 日本語の変換を取り消す Esc では閉じない
+askUpdate();
 
 // ── 下部セクションの出現（一度だけ）──
 const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -10% 0px' });

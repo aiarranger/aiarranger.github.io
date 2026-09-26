@@ -70,6 +70,21 @@ export const config = {
     chibi: 'assets/scenes/chibi-cut.webp',     // ちびあいちゃん（フォーム）
     kiyogon: 'assets/scenes/kiyogon-cut.webp'  // きよごん（経験）
   },
+  // 「AIに聞いてみる」：訪問者が普段使っている ChatGPT・Claude を、質問を入れた状態で開く（このサイトからは何も送らない）
+  ask: {
+    chatgpt: 'https://chatgpt.com/?hints=search&q=', // 開くとその人のアカウントで送信される
+    claude: 'https://claude.ai/new?q=',             // 入力欄に入った状態で開く（送信はその人が押す）
+    llms: 'https://aiarranger.jp/llms.txt',         // AI 向けの会社情報の要約（リポジトリ直下の llms.txt）
+    maxLen: 200,                                    // 自由入力の上限（URL が長くなりすぎないように）
+    presets: [
+      '30分の無料コンサルで、どんなことを相談できますか？',
+      '機密情報を外に出さずに、社内でAIを使えますか？',
+      '会議の意思決定に、AIをどう使えますか？',
+      '社内研修や勉強会をお願いできますか？'
+    ],
+    // 送る文。本人の発言として決めつけない書き出しにする。最初の質問（無料コンサルで何を相談できるか）のときは、末尾の同じ依頼を付けない
+    prompt: (q, tail = true) => `AI Arranger合同会社（https://aiarranger.jp/ ）について質問です。会社の情報は https://aiarranger.jp/llms.txt にまとまっています。これを読んだうえで、次の質問に日本語で答えてください。\n\n質問：${q}` + (tail ? '\n\n最後に、30分の無料コンサル（https://aiarranger.jp/#form ）で相談するとよいことがあれば添えてください。' : '')
+  },
   contactForm: 'https://docs.google.com/forms/d/e/1FAIpQLSf6QFTPgRlixZjN2cVZmnHWV0lXvlzwcbqWAAAEsJVRHYKgQg/viewform',
   contactEmail: 't-kiyoda@aiarranger.jp'
 };

@@ -1,0 +1,49 @@
+# AI Arranger合同会社
+
+> 生成AIを業務に取り入れたい企業・組織を支援する会社です（代表：許田 剛直、埼玉県所沢市）。社内AI基盤の構築（ローカルLLMなど）、会議の意思決定を支援するAI「MOGI」の開発、生成AIの勉強会・研修の企画を行っています。初回は30分の無料コンサルで相談できます。
+
+## 30分の無料コンサル
+
+- 初回のご相談は30分無料です。相談内容がまだまとまっていなくても大丈夫です。実現したいこと、扱いたい情報、いま困っていることから伺います。
+- 申し込み：[相談フォーム](https://docs.google.com/forms/d/e/1FAIpQLSf6QFTPgRlixZjN2cVZmnHWV0lXvlzwcbqWAAAEsJVRHYKgQg/viewform)（サイトの https://aiarranger.jp/#form からも開けます）
+- メール：t-kiyoda@aiarranger.jp
+
+## できること
+
+- 社内AI基盤の構築：外に出せない機密情報があっても使えるよう、ローカルLLMなど社内で使うAIの導入を支援します。
+- 会議の意思決定支援：会議の意思決定を支援するAIオーバーレイ「MOGI」を開発中です（特願2026-049424）。[Devpost](https://devpost.com/software/mogi-meeting-overlay-for-group-intelligence)
+- 学びと実践の場づくり：生成AIや開発技術をテーマにした勉強会・研修を企画しています。勉強会は12回以上開催し、累計1,100人以上が参加しています。
+- 作って、試して、公開してきた知見で伴走します。
+
+## 公開しているプロダクト・記録
+
+- [image-arranger](https://aiarranger.jp/image-arranger/)：AI画像・動画生成のための、ローカルファーストなプロンプト・素材依頼マネージャー（MITライセンスのオープンソース）。生成サービスは呼び出さず、どのリファレンスを正とするか、どの候補を採用したか、何を依頼中か、どのプロンプトが何を生んだかを整理します。ChatGPT・Midjourney・Vidu など、どの生成サービスとも併用できます。[GitHub](https://github.com/aiarranger/image-arranger)
+- [Punching Arranger 開発日誌](https://aiarranger.jp/blog/punching-arranger/)：好きな曲で身体を動かすゲームを、AIと一緒に作っていく過程の記録です（開発ブログ Dev Log の連載）。
+
+## ハッカソンでの制作（代表の参加作品）
+
+- [WhyTrade JP](https://github.com/kiyogon/whytrade-jp-showcase)：AIAU Craft Day（3日間でアプリ・サービスをローンチするハッカソン）でチームで制作した、日本株の投資戦略を過去データで検証するシミュレーション。8つの質問から投資観を整理し、12種類の戦略から候補を示して、過去の売買と資産の動きを再生します（ハッカソン作品であり、投資助言のサービスではありません）。
+- [MITSDAKE](https://github.com/kiyogon/mitsdake-hackathon)：2026年の Google ハッカソン向けに制作した、3タスク集中型のタスク管理アプリ。AIがメモからタスクを抽出・スコアリングし、今やるべき3つだけを示します。
+- Difyハッカソン3位。
+
+## 代表・経験
+
+- 許田 剛直（きよだ たけなお）、AI Arranger合同会社 代表
+- IT業界23年以上。富士通、LINE、SBI証券、GMOあおぞらネット銀行を経て独立。
+- 金融・暗号資産領域のPM/PMO、金融庁対応を経験。生成AIを現場業務と統制の両方に乗せて回すことを得意としています。
+- 中小企業診断士。
+
+## 勉強会の記録（connpass）
+
+- 2026.02.28 [Agent Skillsなんてこわくないもん！](https://connpass.com/event/381544/)（58/124人）
+- 2025.07.21 [AWSなんてこわくないもん！ 3rd Season](https://connpass.com/event/360946/)（44/222人）
+- 2025.03.15 [非エンジニアでもcursor使ってサービス作れるもん！](https://connpass.com/event/343940/)（61/70人）
+- 2024.09.21 [AWSなんてこわくないもん！ 2nd Season](https://connpass.com/event/329600/)（78/222人）
+- 2024.03.02 [AWSなんてこわくないもん！](https://connpass.com/event/303514/)（358/400人）
+- 2023.09.03 [でーたべーすぺしゃりすとなんてこわくないもん！](https://connpass.com/event/290174/)（400/500人）
+
+## リンク
+
+- [サイト](https://aiarranger.jp/)
+- [開発ブログ Dev Log](https://aiarranger.jp/blog/)
+- [X @aichan_arranger](https://x.com/aichan_arranger)
