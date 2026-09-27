@@ -1,0 +1,84 @@
+/* 実績・ポートフォリオ（/portfolio/）だけの部品。色・文字・ヘッダー・フッター・ボタン・節の地と波・冒頭（.page-hero）・札（.chips）・紙の面（.paper）は /site.css（先に読み込む） */
+
+/* 見出しは語の途中で折り返さない（対応するブラウザだけ。トップは .nw で同じことをしている） */
+.p-hero h1,.p-cat h2,.p-card h3,.p-item h2,.p-cta h2,.stats dd{word-break:auto-phrase}
+
+/* 冒頭：件数はトップの経験の節と同じ数字（生成りの大きな英字、明るいコバルトの「+」）。コバルトの地では「+」と説明が読めないので、墨紺の紙に載せる */
+.p-hero .stats{display:grid;grid-template-columns:repeat(2,auto);justify-content:start;gap:20px 44px;margin:30px 0 0;padding:26px 30px 28px}
+.stats div{display:flex;flex-direction:column}
+.num{font-family:var(--latin);font-weight:800;font-size:clamp(40px,4.4vw,64px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:0}
+.num em{font-style:normal;color:var(--sky)}
+.stats dd{margin:10px 0 0;font-size:14px;line-height:1.6;color:var(--sky)}
+.p-jump{margin-top:26px}
+.p-jump>a{padding:6px 14px;font-weight:700}
+.p-jump>a:hover{color:var(--sky)}
+
+/* 一覧（群青の地）：分類ごとに英字の小見出し・見出し・説明と、墨紺の紙のカード */
+.p-cat+.p-cat{margin-top:76px}
+.p-cat h2{font-size:clamp(26px,2.9vw,42px);margin-bottom:8px}
+.p-cat .cat-lead{max-width:46em;font-size:15px;color:var(--sky);margin-bottom:28px}
+.p-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:28px 24px}
+.p-card{display:flex;flex-direction:column;padding:12px 12px 22px}
+.p-card .thumb{aspect-ratio:16/10;overflow:hidden;background:var(--ultra)}
+.p-card .thumb img{display:block;width:100%;height:100%;object-fit:cover}
+.p-card .thumb-text{display:flex;align-items:center;justify-content:center;height:100%;padding:16px;font-family:var(--head);font-weight:700;font-size:22px;line-height:1.3;text-align:center;color:var(--ivory);background:var(--cobalt)}
+.p-card .body{display:flex;flex-direction:column;gap:8px;padding:16px 8px 0}
+.p-card h3{font-size:20px}
+.p-card p{font-size:15px;line-height:1.9}
+
+/* 札（押せないので、サーモン・赤は使わない）：状態は地に合わせた紺（.chips の既定）、公開中は明るいコバルト、特許は生成り */
+.badges{gap:6px}
+.badges>.badge{padding:1px 9px;font-size:11px;font-weight:700;line-height:1.9}
+.badge.live{--chip:var(--sky);color:var(--ink)}
+.badge.patent{--chip:var(--ivory);color:var(--ink)}
+.badge.review{--chip:var(--cobalt);color:var(--ivory)}
+.review-note{margin-bottom:16px;padding:10px 14px;font-size:13px;line-height:1.7;color:var(--ink);background:var(--ivory)} /* 下書きだけに出る確認事項 */
+
+/* 詳細：墨紺と群青の節を交互に（左右の並びも交互）。図は紙の台紙（群青の節では墨紺の台紙） */
+.p-item{padding:104px 0 100px}
+.p-item .grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:56px;align-items:start}
+.p-item:nth-child(even) .grid{grid-template-columns:minmax(0,5fr) minmax(0,7fr)}
+.p-item:nth-child(even) .media{order:2}
+.p-item.no-media .grid,.p-item.no-media:nth-child(even) .grid{grid-template-columns:minmax(0,1fr)}
+.p-item.no-media .media{display:none}
+.p-item.no-media .text{max-width:760px}
+.p-item .badges{margin-bottom:4px}
+.p-item h2{font-size:clamp(28px,3.4vw,50px);margin:8px 0 12px}
+.p-item .one{font-size:17px;font-weight:700;line-height:1.8;margin-bottom:16px}
+.p-item .desc{display:grid;gap:12px;font-size:15px}
+.p-item h3{font-size:15px;color:var(--sky);margin:26px 0 8px}
+.p-item ul.points{display:grid;gap:4px;margin:0;padding-left:1.2em;font-size:14px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:24px 0 0;font-size:13px}
+.facts dt{color:var(--sky);font-weight:700}
+.facts dd{margin:0}
+.links{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:24px}
+.links a{font-size:14px;font-weight:700;border-bottom:2px solid currentColor;padding-bottom:2px}
+.back{display:inline-block;margin-top:28px;font-size:13px;color:var(--sky);border-bottom:1px solid currentColor}
+.media{display:grid;gap:16px}
+.media figure{margin:0;padding:12px}
+.p-item.sec-ultra .media .paper{--paper:var(--ink)}
+.media img,.media video{display:block;width:100%;height:auto}
+.media video{cursor:pointer}
+.media figcaption{padding:8px 2px 0;font-size:12px;line-height:1.6;color:var(--sky)}
+.media .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));align-items:start;gap:16px}
+
+/* 締め（トップのフォームの節と同じコバルトの地）：見出しの横に紙の輪のちびあいちゃん */
+.p-cta{font-weight:500}
+.p-cta-title{display:flex;align-items:flex-start;gap:20px;margin-bottom:18px}
+.p-cta .lead{max-width:36em}
+
+@media (max-width:749px){
+  .p-hero .stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px;padding:20px 18px 22px}
+  .num{font-size:clamp(32px,10vw,48px)}
+  .stats dd{font-size:13px}
+  .p-cat+.p-cat{margin-top:56px}
+  .p-item{padding:72px 0}
+  .p-item .grid,.p-item:nth-child(even) .grid{grid-template-columns:minmax(0,1fr);gap:28px}
+  .p-item:nth-child(even) .media{order:0}
+  .media figure{padding:10px}
+  .p-cta-title .buddy{width:64px;height:64px}
+}
+/* 幅560以下：トップのスマホと同じく数字を1列に（説明文を1行に収める） */
+@media (max-width:560px){
+  .p-hero .stats{grid-template-columns:minmax(0,1fr);gap:14px}
+}

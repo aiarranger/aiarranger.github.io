@@ -1,438 +1,69 @@
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-:root {
-  --red: #e42313;
-  --black: #0a0a0a;
-  --white: #ffffff;
-  --bg: #fafafa;
-  --line: #dedede;
-  --muted: #666666;
-  --aichan: #d92762;
-  --kiyogon: #2f5366;
-  --font-display: 'Montserrat', sans-serif;
-  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
-  --font-jp: 'Noto Sans JP', sans-serif;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--black);
-  font-family: var(--font-body);
-  line-height: 1.8;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.site-nav {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--black);
-  border-bottom: 3px solid var(--red);
-}
-
-.site-nav__inner {
-  max-width: 1180px;
-  height: 56px;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-.site-nav__logo {
-  font-family: var(--font-display);
-  font-size: 1.12rem;
-  font-weight: 800;
-  color: var(--white);
-}
-
-.site-nav__logo span {
-  color: var(--red);
-}
-
-.site-nav__links {
-  display: flex;
-  gap: 1.25rem;
-  align-items: center;
-  color: var(--white);
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.site-nav__links a {
-  border-bottom: 2px solid transparent;
-  padding-bottom: 0.2rem;
-}
-
-.site-nav__links a:hover {
-  color: var(--red);
-  border-bottom-color: var(--red);
-}
-
-.container {
-  width: min(1120px, calc(100% - 2.5rem));
-  margin: 0 auto;
-}
-
-.narrow {
-  width: min(760px, calc(100% - 2.5rem));
-  margin: 0 auto;
-}
-
-.blog-hero {
-  padding: 2.25rem 0 1.5rem;
-  border-bottom: 4px solid var(--red);
-  background: var(--white);
-}
-
-.eyebrow {
-  margin: 0 0 0.5rem;
-  color: var(--red);
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.blog-hero h1,
-.article-header h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 2.75rem;
-  line-height: 1;
-  font-weight: 900;
-}
-
-.blog-hero__lead,
-.article-header__lead {
-  margin: 0.8rem 0 0;
-  max-width: 760px;
-  color: #333333;
-  font-family: var(--font-jp);
-  font-size: 0.98rem;
-  line-height: 1.9;
-}
-
-.breadcrumbs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin: 0 0 1.5rem;
-  color: var(--muted);
-  font-family: var(--font-jp);
-  font-size: 0.86rem;
-}
-
-.breadcrumbs a {
-  border-bottom: 1px solid var(--line);
-}
-
-.breadcrumbs a:hover {
-  color: var(--red);
-  border-bottom-color: var(--red);
-}
-
-.section {
-  padding: 2.25rem 0;
-}
-
-.section--compact {
-  padding-top: 0.5rem;
-}
-
-.section-title {
-  margin: 0 0 1.25rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 4px solid var(--black);
-  font-family: var(--font-jp);
-  font-size: 1.5rem;
-  font-weight: 800;
-}
-
-.series-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
-.latest-card {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.95fr) minmax(320px, 1.05fr);
-  gap: 0;
-  border-top: 5px solid var(--red);
-  background: var(--white);
-  box-shadow: 0 16px 36px rgba(10, 10, 10, 0.08);
-}
-
-.latest-card__image {
-  min-height: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #eeeeee;
-}
-
-.latest-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.latest-card__body {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 1.5rem;
-}
-
-.latest-card h2 {
-  margin: 0 0 0.75rem;
-  font-family: var(--font-jp);
-  font-size: 1.45rem;
-  line-height: 1.45;
-}
-
-.latest-card p {
-  margin: 0;
-  color: #444444;
-  font-family: var(--font-jp);
-}
-
-.series-card,
-.article-card {
-  display: block;
-  border-top: 5px solid var(--red);
-  background: var(--white);
-  box-shadow: 0 16px 36px rgba(10, 10, 10, 0.08);
-}
-
-.series-card__body,
-.article-card__body {
-  padding: 1.25rem;
-}
-
-.series-card h2,
-.article-card h2 {
-  margin: 0 0 0.75rem;
-  font-family: var(--font-jp);
-  font-size: 1.25rem;
-  line-height: 1.45;
-}
-
-.series-card p,
-.article-card p {
-  margin: 0;
-  color: #444444;
-  font-family: var(--font-jp);
-  font-size: 0.95rem;
-}
-
-.article-card__image {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #eeeeee;
-}
-
-.article-card__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin: 1rem 0 0;
-  color: var(--muted);
-  font-family: var(--font-jp);
-  font-size: 0.86rem;
-}
-
-.tag {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid var(--line);
-  padding: 0.1rem 0.55rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.article-header {
-  padding: 3.5rem 0 2rem;
-  background: var(--white);
-  border-bottom: 8px solid var(--red);
-}
-
-.cover {
-  margin: 2rem auto 0;
-  width: min(1120px, calc(100% - 2.5rem));
-}
-
-.cover img {
-  width: 100%;
-  border: 1px solid var(--line);
-}
-
-.article-body {
-  padding: 1.5rem 0 3rem;
-  background: var(--white);
-}
-
-.article-preview {
-  padding: 24px;
-  border: 1px solid rgba(61, 52, 44, 0.12);
-  border-radius: 8px;
-  background: #fffdf9;
-  box-shadow: 0 18px 50px rgba(44, 38, 32, 0.08);
-}
-
-.article-preview h1 {
-  margin: 0 0 18px;
-  font-family: var(--font-display);
-  font-size: 2.45rem;
-  line-height: 1.12;
-  font-weight: 900;
-}
-
-.article-preview p {
-  margin: 0 0 22px;
-  color: #2e2822;
-  font-family: var(--font-jp);
-  font-size: 1.05rem;
-  line-height: 1.85;
-  white-space: pre-wrap;
-}
-
-.article-preview p.dialogue-paragraph {
-  margin-left: 8px;
-  padding: 11px 14px 12px 16px;
-  border-left: 4px solid rgba(61, 52, 44, 0.2);
-  border-radius: 0 8px 8px 0;
-}
-
-.article-preview p.speaker-aichan {
-  border-left-color: #c63b78;
-  color: #2c1724;
-  background: rgba(198, 59, 120, 0.07);
-}
-
-.article-preview p.speaker-kiyogon {
-  border-left-color: #2d8b80;
-  color: #172724;
-  background: rgba(45, 139, 128, 0.08);
-}
-
-.article-preview p.speaker-unknown {
-  border-left-color: #9c8a73;
-  background: rgba(156, 138, 115, 0.08);
-}
-
-.preview-image {
-  margin: 24px 0;
-}
-
-.preview-image img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 8px;
-  border: 1px solid rgba(61, 52, 44, 0.12);
-  background: #ece6dc;
-}
-
-.article-nav {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 3rem;
-  padding-top: 1.5rem;
-  border-top: 2px solid var(--black);
-  font-family: var(--font-jp);
-  font-weight: 700;
-}
-
-.article-nav a {
-  color: var(--red);
-}
-
-.footer {
-  background: var(--black);
-  color: rgba(255, 255, 255, 0.65);
-  padding: 1.5rem 0;
-  font-family: var(--font-body);
-  font-size: 0.8rem;
-}
-
-.footer__inner {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-@media (max-width: 760px) {
-  .site-nav__inner {
-    height: auto;
-    padding: 1rem 1.25rem;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-
-  .site-nav__links {
-    flex-wrap: wrap;
-    row-gap: 0.5rem;
-  }
-
-  .series-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .latest-card {
-    grid-template-columns: 1fr;
-  }
-
-  .blog-hero,
-  .article-header {
-    padding-top: 1.75rem;
-  }
-
-  .blog-hero h1,
-  .article-header h1 {
-    font-size: 2.15rem;
-  }
-
-  .article-preview {
-    padding: 22px;
-  }
-
-  .article-preview h1 {
-    font-size: 2rem;
-  }
-
-  .article-nav,
-  .footer__inner {
-    flex-direction: column;
-  }
+/* Dev Log だけの部品。色・文字・ヘッダー・フッター・ボタン・紙のカード・札・波は、トップと共通の /site.css を使う（7色だけ。グラデーション・ぼかし・柔らかい影は使わない） */
+/* 見出しは語の途中で折り返さない（対応するブラウザだけ。トップは .nw、実績は portfolio.css と同じ指定） */
+.blog-hero h1,.latest-card h2,.series-card h2,.article-card h2,.article-preview h1{word-break:auto-phrase}
+
+/* パンくず（一覧は冒頭のコバルトの上、記事は明るい紙の上） */
+.breadcrumbs{display:flex;flex-wrap:wrap;gap:4px 8px;margin:0 0 22px;font-size:13px;font-weight:700;line-height:1.7}
+.breadcrumbs a{border-bottom:1px solid currentColor}
+.breadcrumbs a:hover{border-bottom-width:2px}
+
+/* ── 一覧（/blog/ と シリーズ）：低い冒頭のすぐ下に最新の記事 ── */
+.blog-hero{padding:44px 0 80px}
+@media (min-width:750px){.blog-hero{--bub:clamp(150px,16vw,220px)}} /* 泡を少し小さく（冒頭を低く）。幅749以下は site.css の 72px のまま */
+.blog-hero .lead{font-size:16px}
+.blog-list{padding:64px 0 128px}
+.blog-list .wrap>section+section{margin-top:56px}
+.blog-list .section-title{margin:0 0 18px;font-family:var(--latin);font-weight:800;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--ultra)}
+
+.series-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+
+/* カード：紙の面（site.css の .paper）に、手切りの縁の写真を貼る */
+.paper.latest-card{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:30px;align-items:center;padding:20px 32px 20px 20px}
+.paper.series-card,.paper.article-card{padding:18px 18px 26px}
+.latest-card__image,.article-card__image{aspect-ratio:16/9;overflow:hidden;background:var(--ink)}
+.latest-card__image img,.article-card__image img{display:block;width:100%;height:100%;object-fit:cover}
+.series-card__body,.article-card__body{padding:20px 12px 0}
+.latest-card h2{font-size:26px;margin:0 0 12px}
+.series-card h2,.article-card h2{font-size:20px;margin:0 0 10px}
+.latest-card p:not(.eyebrow),.series-card p,.article-card p{font-size:15px;line-height:1.9}
+.latest-card .eyebrow{margin-bottom:10px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-top:18px;font-size:13px;color:var(--sky)}
+.meta time{font-family:var(--latin);font-weight:700;letter-spacing:.06em}
+
+/* ── 記事：サイトのヘッダーは出さず、パンくずから。明るい紙の上に、読みやすい幅の本文 ── */
+.article-body{position:relative;padding:52px 0 136px}
+.article-body::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;background:var(--ink);clip-path:polygon(0 0,100% 0,100% 30%,96% 70%,90% 35%,84% 80%,77% 40%,70% 75%,62% 30%,55% 70%,47% 35%,40% 80%,33% 40%,26% 70%,18% 30%,11% 75%,5% 40%,0 70%)} /* 上辺：ヘッダーの帯と同じ手切りの縁 */
+.article-body .container{width:min(40em,calc(100% - var(--gutter) * 2));margin:0 auto;font-size:17px}
+.article-body .breadcrumbs{color:var(--ultra);margin-bottom:34px}
+.article-preview h1{font-size:clamp(28px,3.4vw,40px);line-height:1.4;margin:0 0 30px}
+.article-preview p{margin:0 0 1.35em;line-height:2.05;white-space:pre-wrap}
+/* 会話の段落：話者名は出さず、左の細い切り紙の帯の色だけで分ける（あいちゃん：コバルト、きよごん：墨紺） */
+.article-preview p.dialogue-paragraph{position:relative;padding-left:20px}
+.article-preview p.dialogue-paragraph::before{content:"";position:absolute;left:0;top:.3em;bottom:.3em;width:4px;background:var(--sky);clip-path:polygon(0 1px,100% 0,100% 100%,0 calc(100% - 2px))}
+.article-preview p.speaker-aichan::before{background:var(--cobalt)}
+.article-preview p.speaker-kiyogon::before{background:var(--ink)}
+/* 写真：手切りの縁で切り、群青の紙を少しずらして敷く */
+.preview-image{position:relative;z-index:0;margin:40px 10px 48px 0}
+.preview-image::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ultra);transform:translate(8px,10px);clip-path:polygon(0 1%,18% 0,40% 1.2%,63% .2%,86% 1%,100% 0,99.4% 30%,100% 62%,99.2% 100%,72% 99%,48% 100%,24% 99.2%,0 100%,.7% 66%,0 34%)}
+.preview-image img{width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ink);clip-path:polygon(.4% .8%,21% 0,44% 1%,67% .3%,88% 1.1%,99.6% .2%,100% 33%,99.3% 64%,99.8% 99.4%,76% 100%,51% 99.1%,27% 99.8%,.2% 99.2%,.8% 67%,0 36%)}
+.article-nav{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px 28px;margin-top:56px;padding-top:26px;border-top:2px solid var(--ink);font-size:15px}
+
+@media (max-width:749px){
+  .blog-hero{padding:30px 0 64px}
+  .blog-list{padding:44px 0 104px}
+  .blog-list .wrap>section+section{margin-top:44px}
+  .series-grid{grid-template-columns:1fr;gap:22px}
+  .paper.latest-card{grid-template-columns:1fr;gap:0;padding:16px 16px 26px}
+  .paper.series-card,.paper.article-card{padding:16px 16px 24px}
+  .latest-card__body{padding:20px 6px 0}
+  .series-card__body,.article-card__body{padding:18px 6px 0}
+  .latest-card h2{font-size:22px}
+  .article-body{padding:40px 0 112px}
+  .article-body .container{font-size:16px}
+  .article-body .breadcrumbs{margin-bottom:26px}
+  .article-preview h1{margin-bottom:24px}
+  .article-preview p.dialogue-paragraph{padding-left:16px}
+  .preview-image{margin:32px 6px 38px 0}
+  .preview-image::before{transform:translate(6px,7px)}
+  .article-nav{flex-direction:column;align-items:flex-start;margin-top:44px}
 }
