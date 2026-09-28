@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#061226">
+<title>第2回 記憶は過去、スキルは次の動き | Punching Arranger 開発日誌</title>
+<meta name="description" content="Punching Arranger 開発日誌 第2回。AIが一晩で残した長いログから、次の作業でも使う「確かめ方」だけをスキルに残していくまでの記録。">
+<meta property="og:title" content="第2回 記憶は過去、スキルは次の動き">
+<meta property="og:description" content="Punching Arranger 開発日誌 第2回。AIが一晩で残した長いログから、次の作業でも使う「確かめ方」だけをスキルに残していくまでの記録。">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://aiarranger.jp/blog/assets/punching-arranger/002/cover.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700&display=swap">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="../blog.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "第2回 記憶は過去、スキルは次の動き",
+  "description": "Punching Arranger 開発日誌 第2回。AIが一晩で残した長いログから、次の作業でも使う「確かめ方」だけをスキルに残していくまでの記録。",
+  "datePublished": "2026-09-28",
+  "dateModified": "2026-09-28",
+  "author": {
+    "@type": "Person",
+    "name": "許田 剛直"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI Arranger合同会社"
+  },
+  "image": "https://aiarranger.jp/blog/assets/punching-arranger/002/cover.jpg",
+  "mainEntityOfPage": "https://aiarranger.jp/blog/punching-arranger/002-memory-and-skill.html"
+}
+</script>
+</head>
+<body>
+<main class="article-body sec-ivory">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="パンくず">
+      <a href="/">AI Arranger</a>
+      <span>/</span>
+      <a href="../index.html">開発ブログ</a>
+      <span>/</span>
+      <a href="./index.html">Punching Arranger</a>
+      <span>/</span>
+      <span>第2回</span>
+    </nav>
+    <article class="article-preview" id="articlePreview">
+        <h1>記憶は過去、スキルは次の動き</h1>
+        <figure class="preview-image"><img src="../assets/punching-arranger/002/cover.jpg" alt="記憶は過去、スキルは次の動き アイキャッチ"></figure>
+        <p>窓の外で、雨がガラスに細い線を何本も引いていた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/002/opening.jpg" alt="長いログを見返すきよごんに話しかけるあいちゃん"></figure>
+        <p>五月の終わりの、昼前だった。</p>
+        <p>きよごんは長いログを画面に開いたまま、手を止めていた。</p>
+        <p>五月の半ばの一晩に、AIが残したログだ。夕方から日付が変わったあとまで、AIは初見のプレイヤーとしてゲームを遊び、評価し、直し、もう一度確かめた。その輪を、四十回を超えて回した。</p>
+        <p>十分ほどおきに、変更が積まれていった。結果画面に命中率を出す。キーボードでもパンチを打てるようにする。朝には、ログは約二千五百行になっていた。</p>
+        <p>全部読めるし、意味も分かる。</p>
+        <p>それなのに、今日の最初の一歩だけが画面から出てこない。</p>
+        <p>画面の端では、ゲームのウィンドウがログの隣に開いたままになっている。</p>
+        <p>そのウィンドウの中で、あいちゃんがログのほうへ首を伸ばした。ツイードの襟元で、シルクのスカーフが揺れた。</p>
+        <p>雨で鈍った部屋の光が、あいちゃんのいる画面に薄い灰色を落としていた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごん、また同じところ見てる。三回目」</p>
+        <p>きよごんはスクロールを少し戻した。途中の表を開いて、また閉じる。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「見たことと、次に使えることは違う」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「前に転んだ場所を覚えてるのに、もう一回つまずくってこと？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「場所は覚えている。でも足の出し方が残っていない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「前に言ってたよね。記憶は前に何があったか、スキルは次にどう動くか」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「うん」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、これは記憶？」</p>
+        <p>きよごんはログの端に目を落としたまま、うなずいた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「こんなに細かいのに。私なら、読んでるうちに曲が終わっちゃう」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「全部が同じ重さで並んでいる」</p>
+        <p>あいちゃんは隣のウィンドウをのぞき込んだ。一晩の出来事が、起きた順にきちんと並んでいる。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ちゃんと並んでるよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「起きた順には」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ほかに順番があるの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「ログは、起きた順に残る。スキルは、次に使う順に残す」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「スキルって、慣れ？……ちがうな。構えだ。それなら毎回やってる」</p>
+        <p>考えるより先に、あいちゃんの両手が顔の横へ戻った。構えは一拍でほどけた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「曲が始まる前に、身体はもう半分動いてる。あれでしょ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「考え始める前に、最初の形に入れるようにする」</p>
+        <p>あいちゃんの目が、ログの途中の一行で止まった。Joy-Con が手元にないと、パンチをマウスのクリックで合わせるしかない。そう書かれた一行だ。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ここ。プレイヤーの手が迷ったところ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「クリックすれば、入力は届いていた」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「届くだけじゃ足りないよ」</p>
+        <p>画面の中で、あいちゃんが見えないマウスを握るふりをした。横へ滑らせて、止めて、押す。そのあいだに、次の拍が過ぎていく。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「曲は待ってくれないもん。手が画面の上で的を探してるうちに、サビが来ちゃう」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「リズムゲームとしては、操作が重い。ログにも、そう書いてある」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「重いっていうより、置いてけぼり。音は鳴ってるのに、手だけ間に合わない」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「初見のつもりで遊んだAIも、そこで引っかかっている」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「初めての人なら、そこで一曲やめちゃうよ。好きな曲でも」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「その夜のうちに、キーボードでも打てるようにした。次の輪で、キーボードだけで最後まで通している」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、Joy-Con がなくても、最初の一回は遊べる」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「遊べるかどうかを、もう一度遊んで確かめた」</p>
+        <p>直した行と、確かめた行。あいちゃんの目が、そのあいだを何度か往復した。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「私、こっちの行のほうが好き。キーボードだけで、最後まで通せたって書いてある」</p>
+        <p>きよごんはスキルのフォルダを開いて、ログの隣に並べた。おとといの朝、四つが一度に増えたフォルダだ。ブラウザ操作のスキルには、五月二十三日の日付で最初の成功レシピが置いてある。ファイルを添付するとき、その場所を手で打たずに、コピーしておいた場所を貼り付ける。それだけの小さな手順だ。</p>
+        <p>レシピの上の段には、残してよい条件が並ぶ。最初の二つは、実際に成功したこと。その成功を、画面で確かめたこと。失敗と、たまたまの成功は書かない。スキルの本文には、言い切った一行もある。クリックした、だけでは成功とみなさない。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「さっきのマウスと同じだ。届いただけじゃ、数えない」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「押したあと、画面が変わったかまで見る。そこまでで一行」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「プレイヤーも、画面が応えてくれたら次を打てるもんね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「スキルに抜くのは、直し方じゃない。直したあと、どう確かめたか」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「キーボードの直し方は、置いていくの？」</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/002/concept.jpg" alt="ログから確かめ方だけを抜き出してスキルにする流れ"></figure>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「あれは、このゲームの、あの夜の話」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「あの夜だけの振り付け、みたいなもの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「確かめ方のほうは、次の作業でも使う」</p>
+        <p>きよごんは、隣のログで確かめ方を書いた数行にだけ印をつけた。キーボードの直し方は、ログの中にそのまま置いた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「印、少ないね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「次に使うのは、この数行だけ」</p>
+        <p>ゲームのウィンドウの奥では、スタート前の画面が、まだ鳴っていない一拍目を待って静かに光っていた。</p>
+        <p>画面の端には、Codex のウィンドウも並んでいる。手を動かすのは主に Codex で、Claude Code には同じものを別の角度から読んでもらう。AIが毎回最初に読む約束のファイルのいちばん上には、さっき Codex に頼んだ段が仮置きのまま入っている。AIがコードを直すときは、作業用の別の写しを使う、という段だ。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「AIが二人いても、最初の構えはそろえたいね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「そろうように、細かい手順は約束のファイルに書かずに、スキルへ分けてある」</p>
+        <p>尻尾の先を小さく揺らしながら、あいちゃんは Codex が直している側のウィンドウと、自分のいるウィンドウを見比べた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「任せてるのに、きよごんが置いていかれてない」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「任せても、基準はこっちに残る」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「そのうち、全部任せちゃいそう」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「丸投げに見えるところまで、任せ方を小さく分けていく」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、きよごんは何をするの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「どれを残すか、選んでる」</p>
+        <p>ログをいちばん上まで戻すと、何日も前の夜の行が出た。何が起きたかは分かる。なぜその順で直したのかは、読み直さないと分からない。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「自分で回させたのに？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「順番を決めたのはAI。何を見て次を任せたかは、書いてない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごんも、覚えてないの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「あの夜、何を確かめてから任せたか。そこはもう追えない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、先に書いとこうよ。明日のきよごんが、イントロで立ち尽くさないように」</p>
+        <p>きよごんはスキルのウィンドウへ移り、いちばん下の空いた行にカーソルを置いた。印をつけた確かめ方を、次の作業の手順として書き足す場所だ。</p>
+        <p>あいちゃんがウィンドウの縁まで身を乗り出すと、髪の間で、髪留めほどの赤い角がスキルのウィンドウの白い光を拾った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「構えが増えたら、どの曲が来てもすぐ入れるね。スキル、どんどん増やそうよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「似た手順が二つあると、どっちを読むかで止まる」</p>
+        <p>窓の外では、雨がまだ降り続いている。きよごんはそちらを見たまま言った。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「文明は、考えずにできる大事な操作を増やすことで進む。考えるのは騎兵の突撃と同じで、数に限りがある。ホワイトヘッドという数学者の言葉」</p>
+        <p>しばらく黙ってから、あいちゃんは両手を顔の横へ上げかけて、途中で下ろした。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「わかる。構えを身体に任せてるから、サビで全力が出せる。最初から全部考えてたら、サビの前に息が切れる」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「考える場所を空けておく」</p>
+        <p>スキルのウィンドウの一覧で、あいちゃんが一つだけ毛色の違うファイルに目を止めた。Grok のスキルの中に参考として置かれたファイルで、プレビューの冒頭には「このファイルは成功レシピではない」とある。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「失敗は残さないんじゃなかったの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「レシピには残さない。これは、うまくいかなかった試し方の記録。あいちゃんの右のアッパーを、三十回を超えて試した」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「三十回ぶんの私、か」</p>
+        <p>きよごんはプレビューより先を開かなかった。あいちゃんは自分の右の拳を一度だけ見下ろして、ゲームのウィンドウの真ん中へ戻った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「プレイヤーも、毎回ちがう身体で来るよね。昨日と今日で同じじゃない。疲れてる日もあるし、気持ちだけ先に走る日もある」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「だから、構えだけは毎回同じにしておく」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「最初の一歩が軽ければ、疲れてる日でも一曲だけは動ける。曲が終わったら、それで今日は勝ち」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「開発も同じ」</p>
+        <p>ウィンドウの中で、あいちゃんが足を踏み替えた。どこから曲が来ても、すぐに入れる位置だ。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、きよごんの今日の勝ちは？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「次に迷わないこと」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、地味」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「地味でいい」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「でも強い」</p>
+        <p>雨は弱くなっていた。窓の外の線が、さっきより間をあけて落ちている。</p>
+        <p>あいちゃんは、アッパーの手前の形で右の拳を握り直し、背中で畳んだ羽を、栞をはさみ直すように少しだけ動かした。</p>
+        <p>スキルのウィンドウの空いた行で、カーソルがさっきより迷わずに点滅していた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/002/closing.jpg" alt="雨が弱まった窓辺で次の曲を待つあいちゃん"></figure>
+    </article>
+    <nav class="article-nav" aria-label="記事ナビゲーション">
+      <a class="text-link" href="./index.html">Punching Arranger 開発日誌一覧へ</a>
+      <a class="text-link" href="../index.html">開発ブログトップへ</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wave wave-0" aria-hidden="true"></div>
+  <div class="wrap foot">
+    <p>AI Arranger合同会社　代表 許田 剛直　埼玉県所沢市</p>
+    <p class="foot-links"><a href="https://x.com/aichan_arranger" target="_blank" rel="noopener noreferrer">X @aichan_arranger ↗</a><a href="/portfolio/">実績</a><a href="/blog/">Dev Log ↗</a><a href="/#form">無料相談</a></p>
+    <p class="copy">© 2026 AI Arranger合同会社</p>
+  </div>
+</footer>
+</body>
+</html>

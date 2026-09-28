@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#061226">
+<title>第4回 あいちゃんは海を釣りたがる | Punching Arranger 開発日誌</title>
+<meta name="description" content="Punching Arranger 開発日誌 第4回。倒すゲームから、釣るゲームへ。釣りフィットネスの案が生まれ、六月の終わりに作り直すまでの記録。">
+<meta property="og:title" content="第4回 あいちゃんは海を釣りたがる">
+<meta property="og:description" content="Punching Arranger 開発日誌 第4回。倒すゲームから、釣るゲームへ。釣りフィットネスの案が生まれ、六月の終わりに作り直すまでの記録。">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://aiarranger.jp/blog/assets/punching-arranger/004/cover.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@700&display=swap">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="../blog.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "第4回 あいちゃんは海を釣りたがる",
+  "description": "Punching Arranger 開発日誌 第4回。倒すゲームから、釣るゲームへ。釣りフィットネスの案が生まれ、六月の終わりに作り直すまでの記録。",
+  "datePublished": "2026-09-28",
+  "dateModified": "2026-09-28",
+  "author": {
+    "@type": "Person",
+    "name": "許田 剛直"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "AI Arranger合同会社"
+  },
+  "image": "https://aiarranger.jp/blog/assets/punching-arranger/004/cover.jpg",
+  "mainEntityOfPage": "https://aiarranger.jp/blog/punching-arranger/004-aichan-wants-the-sea.html"
+}
+</script>
+</head>
+<body>
+<main class="article-body sec-ivory">
+  <div class="container">
+    <nav class="breadcrumbs" aria-label="パンくず">
+      <a href="/">AI Arranger</a>
+      <span>/</span>
+      <a href="../index.html">開発ブログ</a>
+      <span>/</span>
+      <a href="./index.html">Punching Arranger</a>
+      <span>/</span>
+      <span>第4回</span>
+    </nav>
+    <article class="article-preview" id="articlePreview">
+        <h1>あいちゃんは海を釣りたがる</h1>
+        <figure class="preview-image"><img src="../assets/punching-arranger/004/cover.jpg" alt="あいちゃんは海を釣りたがる アイキャッチ"></figure>
+        <p>画面の中で、あいちゃんの両手は、構えの高さより下にあった。握り直した右の拳が、行き先を探しているように見えた。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/004/opening.jpg" alt="海の話を持ちかけるあいちゃん"></figure>
+        <p>五月の終わりの夜だった。窓の外はもう暗く、部屋の中では、モニターの光だけが、まだ昼の続きをしていた。</p>
+        <p>カーソルが近くを通るたび、あいちゃんの肩に掛かった淡い青のナイロンの羽織りが、見えない風に触れたみたいに裾を跳ねさせた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごん、週末の海の話、まだ終わってないよ」</p>
+        <p>きよごんは、開いていたログのウィンドウを一つ閉じた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「海釣りって、何が楽しいの？」</p>
+        <p>きよごんはすぐには答えなかった。ログを見る時と同じ顔で、窓の外を見た。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「待つところ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「待つのが楽しいの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「待っている間に、海が変わる」</p>
+        <p>あいちゃんは、ぱちりと瞬きをした。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、ゲームになるね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「まだ何も説明していない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「でも、もう少し分かるよ。ずっと止まっているわけじゃないんでしょ。風が変わって、糸が動いて、手の中に返事が来る」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「返事」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「うん。海は、ちゃんと返してくれる」</p>
+        <p>きよごんは、今度は頷いた。</p>
+        <p>海釣りは、派手な趣味ではない。少なくとも、外から見るとそう見える。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「竿を出したら、あとは待つ。でも、何もしていないわけじゃない。潮の流れを見て、投げる方向を変える。糸の張りを指で覚える。小さな違和感を、魚か、波か、海底かに分ける」</p>
+        <p>あいちゃんは、途中で口を挟まなかった。海の話の時だけ長くなる声を、前から知っている顔だった。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ログみたい」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「似ているかもしれない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ私も釣りしたい」</p>
+        <p>あいちゃんの背中で短く畳まれた羽が、画面の青い光を受けた。羽そのものは動かないのに、その影だけが一拍遅れて揺れた。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「画面の中に海はない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「作ればいいよ」</p>
+        <p>きよごんは、答える代わりにメモを一つ開いた。</p>
+        <p>その夜に書き始めたばかりのメモだった。題は、釣りフィットネスゲーム案。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「なんだ、もう海があるよ」</p>
+        <p>きよごんは、書き出しの一行を指で示した。</p>
+        <p>現時点では、実装対象ではない。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「まだ作らないなら、先に決めよう。何を釣るの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「曲の中で、身体が続く理由」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「いいね。魚じゃなくて、もう一回を釣るんだ」</p>
+        <p>きよごんは、キーボードから手を離した。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「太公望は、まっすぐな針で釣りをしていた、という言い伝えがある」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、釣れないよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「釣りたいものが魚じゃなかった、という読み方がある。掛かりたい者だけが掛かる」</p>
+        <p>あいちゃんは、少しのあいだ黙った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「無理やり引っかけない、ってこと？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「プレイヤーが、自分から掛かりに来る場所を作る」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「好きな曲が、餌？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「一番強いと思う」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ私も、餌？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「相棒」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「そこは即答だね」</p>
+        <p>好きな曲が流れると、身体は勝手に拍を探す。息が上がっても、曲が続いているあいだは、あと少しだけ動ける。</p>
+        <p>そこに、海を置く。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「プレイヤーが動いた時、海が返事をする」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それなら、寂しくないね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「今は、案だけ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それでも、海の音がする」</p>
+        <p>あいちゃんは、画面の向こうで耳を澄ませた。</p>
+        <p>翌日の昼、メモは書き直された。</p>
+        <p>書き出しの一行は残したまま、コンセプトの行が入った。</p>
+        <p>好きな曲で体を動かし、魚を釣って集めるフィットネスゲーム。</p>
+        <p>ゲームの目的も、静かに入れ替わっていた。</p>
+        <p>敵を倒す、から、魚を釣る、へ。</p>
+        <p>あいちゃんは、その一行を長く見ていた。それから、下ろしていた右の拳を、胸の高さまで持ち上げた。</p>
+        <p>メモには、釣りの流れも並んでいた。場所を選ぶ。道具を選ぶ。投げる。あたりを待つ。合わせる。やりとりをする。引き上げる。記録する。集める。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「曲みたい。待っているところにも、拍がある」</p>
+        <p>メモの九つの工程を、あいちゃんは左手の指で数えた。五本で足りなくなると、持ち上げたままの右の拳から、指を一本ずつほどいた。九つ目で、スポーツウェアの影に紛れたあいちゃんの尻尾の先が、小さく丸まった。</p>
+        <p>きよごんは否定しなかった。ただ、それはまだメモの中の話だった。</p>
+        <p>海は、まず絵として届いた。その日の午後、パンチのゲームで相手が立っている枠に、ChatGPTで作った仮の釣りの絵が入った。竿を握る手元や、水面に浮かぶウキだった。</p>
+        <p>背景を透明にしてほしいと頼んだはずの素材には、透明の代わりに、灰色と白の市松模様が、絵として描き込まれていた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「透明を、描いてくれたんだ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「言われたとおりではある」</p>
+        <p>市松模様は、あとで一枚ずつ本当の透明に直された。</p>
+        <p>その夜、メモの後ろのほうに、魚の名前が並んだ。小物はアジ、サバ、イワシ、ヒトデ。大物はブリ、ヒラマサ、カンパチ、ヒラメ、サメ、マグロ。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ヒトデは魚じゃないよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「小物の、ハズレ枠」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ハズレにも、居場所があるね」</p>
+        <p>あいちゃんの目が、大物の列の最後で止まった。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「マグロ、釣りたい」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「最初からは無理」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「最初からじゃなきゃ、いいんだ」</p>
+        <p>一つだけ、あいちゃんが声に出さずに読んだ行があった。逃げた魚も、見たことがある、として残す。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/004/concept.jpg" alt="釣りの九つの工程を曲の拍に重ねた図"></figure>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、優しいね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「記録として正しいだけ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「じゃあ、最初のマグロは逃げてもいいね。次に釣るから」</p>
+        <p>同じ夜、ChatGPTで、釣りの画面の素材が一式作られた。その中に、サーフと呼ばれる砂浜の釣り場を昼の光で描いた背景と、結果の画面に仮に置く一匹のマグロがあった。</p>
+        <p>あいちゃんは、画面に開かれた砂浜の絵をしばらく見ていた。白い砂と、浅い水の色と、遠くの水平線。画面の中に初めて来た砂浜は、音も匂いもない、一枚の絵だった。</p>
+        <p>本当の海はそこにはない。濡れた防波堤も、朝の冷えた空気も、きよごんの記憶の側にある。</p>
+        <p>けれど、好きな曲が鳴って、身体が拍を追いかけ、画面の中で糸が張るなら。その瞬間だけは、PCの前にも小さな海が来るかもしれない。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「きよごん、最初は何を釣る？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「小さい魚でいい」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「だめ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「なぜ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「最初に釣るのは、続けられる気持ち」</p>
+        <p>きよごんは、メモを保存した。砂浜の絵の前で、あいちゃんの右手は、竿を握る形になっていた。</p>
+        <p>そこから、しばらく静かになった。</p>
+        <p>次に記録が大きく動いたのは、六月二十六日の夜だった。</p>
+        <p>きよごんは同じ部屋で、コードを置く新しい場所を作った。</p>
+        <p>ゲームの名前は、Fishing-Fitness。Punching Arrangerとして始めたゲームを、釣りフィットネスゲームとして作る。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「作り直すの？」</p>
+        <p>あいちゃんは、一か月前の会話の続きみたいに聞いた。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「完成版は、ここで一から作る」</p>
+        <p>それまで積み上げたコードも資料も、古い棚へ移した。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「スキルも、棚に？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「同じ棚へ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「使わなくなったら、記憶に戻るの？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「読むのはいい。新しいコードからは、つながない」</p>
+        <p>AIが作業の前に読む約束のファイルには、判断に迷った時に戻る一行が置かれた。</p>
+        <p>好きな曲で遊んでたら痩せちゃった。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「それ、ずるいくらい短いね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「迷ったら、そこへ戻る」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「痩せちゃった、は約束？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「約束はしていない。目指しているだけ」</p>
+        <p>指示書には、パンチもキックもジャンプも残すこと、そして敵の体力を魚の体力と呼び替えただけで終わらせないことが書かれた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「看板だけ海でも、泳げないよ」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「だから、やってはいけないことを先に書いた」</p>
+        <p>最初の試作は、Codexが組んだ。曲を選んで、投げて、巻いて、耐えるところまでが、短い時間で形になった。けれど、流れる道も見慣れた絵もない画面を見て、きよごんは見た目を前のゲームへ戻させ、砂浜の背景とあいちゃんの絵を古い棚から運ばせた。</p>
+        <p>翌日、きよごんは、Codexが動かした試作の画面を開いた。糸が伸び、魚は掛かり、逃げ、数字は増えた。</p>
+        <p>ゲームの画面の中に、黒いパーカーのあいちゃんの絵が立っていた。拳を出す時も、止まった一枚に切り替わるだけだった。ウィンドウの隅から、その絵をのぞき込むように、あいちゃんが淡い青のナイロンの裾を揺らした。声は、いつものようにスピーカーから届いた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ちゃんと釣れる。止まった絵の私もいる。でも、五月に動いた私の拳が、まだ来てない」</p>
+        <p>きよごんは、Codexへの指示を差し替えた。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「新しくするのは、ゲームの目的。手触りは、減らさずに持ってくる」</p>
+        <p>画面を流れてくる、打つための合図がある。その流れてくる間合いを、前のゲームと同じにする。パンチの合図は上から、キックの合図は下から来る。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「上から来たら拳、下から来たら足。身体が先に覚えてたやつだ」</p>
+        <p>五月に作った動きの素材も、古い棚から運ばれた。ジャブからアッパーまで、背景を抜いた拳の動きがそろった。</p>
+        <p>前のゲームにあったものを一つずつ並べて、取りこぼしを探す表も作った。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「足りないものが見つかったら？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「足す」</p>
+        <p>最後に一つ、AIには聞こえないところがあった。</p>
+        <p>Codexは、自分の中のブラウザでSTARTを押した。画面は動いた。合図も流れた。けれど、曲は鳴らなかった。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「曲、鳴ってる？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「ブラウザが断った。AIのクリックでは、音を出さない」</p>
+        <p>Codexが外のChromeで押し直すと、ブラウザの中で、曲は再生の状態になった。それでも、スピーカーから本当に聞こえたかどうかは、画面の記録だけでは分からない。</p>
+        <p>朝の記録にも、昼の引き継ぎにも、人間の仕事が一つ書かれていた。自分の手でSTARTを押し、曲が聞こえることを、耳で確かめる。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「私が確かめられたらいいのに」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「聞こえたかどうかは、こっちの耳でしか分からない」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「知ってる。だから最後は、きよごんの指と耳」</p>
+        <p>きよごんは、自分のブラウザで、試作のゲーム画面を開いた。</p>
+        <p>あいちゃんの絵は、合図が流れる二本の道のあいだの、自分の列に立っていた。いつもの構えだった。</p>
+        <p>右の道の向こう、前は相手が立っていた枠に、海が入っていた。あの昼の砂浜の絵だった。</p>
+        <p>PCの前で二人が動いてきた床が、そのまま砂浜へ続いているように見えた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「あの拳、ここで使うんだ」</p>
+        <p>きよごんは、STARTへカーソルを置いた。</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「押すよ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「うん」</p>
+        <p>きよごんは、自分の指でSTARTを押した。</p>
+        <p>一拍の間があった。それから、スピーカーから曲が鳴った。</p>
+        <p>合図が、上から、下から、流れてくる。</p>
+        <p>上から来た合図に、きよごんの手が応えた。五月の右アッパーが、今度は海へ向けて一回だけ出た。</p>
+        <p>海の絵の上で、糸が一度だけ張った。</p>
+        <p>あいちゃんの羽の影が、画面の青を受けて、また一拍遅れて揺れた。</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「今の、海の返事だね」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「糸が張っただけ」</p>
+        <p class="dialogue-paragraph speaker-aichan" data-speaker="aichan">「ちゃんと鳴った？」</p>
+        <p class="dialogue-paragraph speaker-kiyogon" data-speaker="kiyogon">「鳴った」</p>
+        <p>きよごんは、曲が終わるまで画面から目を離さなかった。</p>
+        <p>交代で見張る役をつけて、次に一晩じゅう走らせるのは、もう少し先のことになる。</p>
+        <p>最後の音が消えると、きよごんの指は、もう一度STARTの上にあった。</p>
+        <figure class="preview-image"><img src="../assets/punching-arranger/004/closing.jpg" alt="海へ向けて右アッパーを打つと糸が張る場面"></figure>
+    </article>
+    <nav class="article-nav" aria-label="記事ナビゲーション">
+      <a class="text-link" href="./index.html">Punching Arranger 開発日誌一覧へ</a>
+      <a class="text-link" href="../index.html">開発ブログトップへ</a>
+    </nav>
+  </div>
+</main>
+
+<footer>
+  <div class="wave wave-0" aria-hidden="true"></div>
+  <div class="wrap foot">
+    <p>AI Arranger合同会社　代表 許田 剛直　埼玉県所沢市</p>
+    <p class="foot-links"><a href="https://x.com/aichan_arranger" target="_blank" rel="noopener noreferrer">X @aichan_arranger ↗</a><a href="/portfolio/">実績</a><a href="/blog/">Dev Log ↗</a><a href="/#form">無料相談</a></p>
+    <p class="copy">© 2026 AI Arranger合同会社</p>
+  </div>
+</footer>
+</body>
+</html>
